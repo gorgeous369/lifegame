@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Profile Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: block;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Character Profile</h1>
+        <form action="#" method="POST">
+            <!-- 生体状态 -->
+            <label for="physical-state">选择生体状态:</label>
+            <select id="physical-state" name="physical_state">
+                <option value="healthy">健康</option>
+                <option value="injured">受伤</option>
+                <option value="exhausted">疲劳</option>
+                <option value="sick">生病</option>
+            </select>
+
+            <!-- 心态 -->
+            <label for="mental-state">选择心态:</label>
+            <select id="mental-state" name="mental_state">
+                <option value="calm">冷静</option>
+                <option value="anxious">焦虑</option>
+                <option value="angry">愤怒</option>
+                <option value="happy">开心</option>
+            </select>
+
+            <!-- 知识水平 -->
+            <label for="knowledge-level">选择知识水平:</label>
+            <select id="knowledge-level" name="knowledge_level">
+                <option value="beginner">初学者</option>
+                <option value="intermediate">中级</option>
+                <option value="expert">专家</option>
+                <option value="genius">天才</option>
+            </select>
+
+            <!-- 提交按钮 -->
+            <button type="submit">提交</button>
+        </form>
+    </div>
+</body>
+</html>
