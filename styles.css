@@ -1,0 +1,93 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f8ff;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    text-align: center;
+    font-size: 2.5em;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.panel {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+h2 {
+    margin: 0 0 15px;
+    font-size: 1.5em;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.skill-name {
+    width: 120px;
+    padding: 5px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f7f9fa;
+    color: #2c3e50;
+}
+
+.value {
+    width: 50px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 0 10px;
+    background: #f7f9fa;
+    color: #2c3e50;
+}
+
+.control-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0984e3;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.control-btn:hover {
+    background-color: #74b9ff;
+}
+
+.add-skill-btn {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: white;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}

@@ -1,77 +1,165 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>游戏人生系统（lifegame-master）</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        label {
-            font-size: 16px;
-            margin-bottom: 5px;
-            display: block;
-        }
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <title>游戏人生系统 (LifeGame-Master)</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>游戏人生系统（lifegame-master）</h1>
-        <form action="#" method="POST">
-            <!-- 身体状态 -->
-            <label for="physical-state">选择身体状态:</label>
-            <select id="physical-state" name="physical_state">
-                <option value="healthy">健康</option>
-                <option value="injured">受伤</option>
-                <option value="exhausted">疲劳</option>
-                <option value="sick">生病</option>
-            </select>
+        <h1 class="title">游戏人生系统 (LifeGame-Master)</h1>
+        <div id="datetime" style="font-size: 2rem;text-align: center;"></div>
+        <!-- 角色属性 -->
+        <div class="panel attributes-panel">
+            <h2>角色属性</h2>
+            <ul id="attributes-list">
+                <li>
+                    体力（Strength）
+                    <button class="info-btn" onclick="showTooltip('在现实生活中，这可以指体能、肌肉力量和耐力。')">i</button>
+                    <button class="control-btn" onclick="decrement('strength')">-</button>
+                    <input type="text" id="strength" class="value" value="0" readonly>
+                    <button class="control-btn" onclick="increment('strength')">+</button>
+                </li>
+                <li>
+                    敏捷（Agility/Dexterity）
+                    <button class="info-btn" onclick="showTooltip('这可以指身体的灵活性、协调性和反应速度。')">i</button>
+                    <button class="control-btn" onclick="decrement('agility')">-</button>
+                    <input type="text" id="agility" class="value" value="0" readonly>
+                    <button class="control-btn" onclick="increment('agility')">+</button>
+                </li>
+                <li>
+                    体质（Constitution/Endurance）
+                    <button class="info-btn" onclick="showTooltip('指身体的健康状况和抵抗疾病的能力。')">i</button>
+                    <button class="control-btn" onclick="decrement('constitution')">-</button>
+                    <input type="text" id="constitution" class="value" value="0" readonly>
+                    <button class="control-btn" onclick="increment('constitution')">+</button>
+                </li>
+                <li>
+                    智力（Intelligence）
+                    <button class="info-btn" onclick="showTooltip('指学习能力、解决问题的能力和逻辑思维能力。')">i</button>
+                    <button class="control-btn" onclick="decrement('intelligence')">-</button>
+                    <input type="text" id="intelligence" class="value" value="0" readonly>
+                    <button class="control-btn" onclick="increment('intelligence')">+</button>
+                </li>
+                <li>
+                    精神（Wisdom/Willpower）
+                    <button class="info-btn" onclick="showTooltip('指心理韧性、决心和情绪管理能力。')">i</button>
+                    <button class="control-btn" onclick="decrement('wisdom')">-</button>
+                    <input type="text" id="wisdom" class="value" value="0" readonly>
+                    <button class="control-btn" onclick="increment('wisdom')">+</button>
+                </li>
+                <li>
+                    魅力（Charisma）
+                    <button class="info-btn" onclick="showTooltip('指与他人互动的能力、社交技能和领导力。')">i</button>
+                    <button class="control-btn" onclick="decrement('charisma')">-</button>
+                    <input type="text" id="charisma" class="value" value="0" readonly>
+                    <button class="control-btn" onclick="increment('charisma')">+</button>
+                </li>
+                <li>
+                    幸运（Luck）
+                    <button class="info-btn" onclick="showTooltip('指获得机会的能力。')">i</button>
+                    <button class="control-btn" onclick="decrement('luck')">-</button>
+                    <input type="text" id="luck" class="value" value="0" readonly>
+                    <button class="control-btn" onclick="increment('luck')">+</button>
+                </li>
+                <li>
+                    创造力（Creativity）
+                    <button class="info-btn" onclick="showTooltip('指创新思维和解决问题的能力。')">i</button>
+                    <button class="control-btn" onclick="decrement('creativity')">-</button>
+                    <input type="text" id="creativity" class="value" value="0" readonly>
+                    <button class="control-btn" onclick="increment('creativity')">+</button>
+                </li>
+            </ul>
+        </div>
 
-            <!-- 心态 -->
-            <label for="mental-state">选择心态:</label>
-            <select id="mental-state" name="mental_state">
-                <option value="calm">冷静</option>
-                <option value="anxious">焦虑</option>
-                <option value="angry">愤怒</option>
-                <option value="happy">开心</option>
-            </select>
+        <!-- 角色技能 -->
+        <div class="panel skills-panel">
+            <h2>角色技能</h2>
+            <ul id="skills-list">
+                <li>
+                    <input type="text" placeholder="技能名称" class="skill-name">
+                    <button class="control-btn" onclick="decrementSkill(this)">-</button>
+                    <input type="text" value="0" class="value" readonly>
+                    <button class="control-btn" onclick="incrementSkill(this)">+</button>
+                    <button class="delete-btn" onclick="deleteTask(this)">删除</button>
+                </li>
+            </ul>
+            <button class="add-task-btn" onclick="addSkill()">添加新技能</button>
+        </div>
 
-            <!-- 知识水平 -->
-            <label for="knowledge-level">选择知识水平:</label>
-            <select id="knowledge-level" name="knowledge_level">
-                <option value="beginner">初学者</option>
-                <option value="intermediate">中级</option>
-                <option value="expert">专家</option>
-                <option value="genius">天才</option>
-            </select>
+        <!-- 角色状态 -->
+        <div class="panel status-panel">
+            <h2>角色状态</h2>
+            <ul>
+                <li>
+                    健康状态:
+                    <select>
+                        <option>正常</option>
+                        <option>受伤</option>
+                        <option>重伤</option>
+                        <option>濒死</option>
+                        <option>死亡</option>
+                    </select>
+                </li>
+                <li>
+                    能量状态:
+                    <select>
+                        <option>能量充足</option>
+                        <option>能量不足</option>
+                        <option>能量耗尽</option>
+                    </select>
+                </li>
+                <li>
+                    疲劳状态:
+                    <select>
+                        <option>精力充沛</option>
+                        <option>正常精力</option>
+                        <option>精疲力竭</option>
+                    </select>
+                </li>
+                <li>
+                    心理状态:
+                    <select>
+                        <option>士气高昂</option>
+                        <option>正常</option>
+                        <option>恐惧</option>
+                        <option>愤怒</option>
+                    </select>
+                </li>
+                <li>
+                    资源状态:
+                    <input type="text" placeholder="ex. 财务状况">
+                </li>
+                <li>
+                    人际关系状态:
+                    <input type="text" placeholder="友好度">
+                </li>
+                <li>
+                    状态效果:
+                    <select>
+                        <option>增益状态（Buffs）</option>
+                        <option>减益状态（Debuffs）</option>
+                        <option>异常状态（Status Ailments）</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
 
-            <!-- 提交按钮 -->
-            <button type="submit">提交</button>
-        </form>
+        <div class="panel goals-panel">
+            <h2>目标及任务</h2>
+            <ul id="goals-list">
+                <li>
+                    <input type="text" placeholder="任务名称" class="task-name">
+                    开始日期: <input type="date" class="task-date">
+                    结束日期: <input type="date" class="task-date">
+                    <button class="delete-btn" onclick="deleteTask(this)">删除</button>
+                </li>
+            </ul>
+            <button class="add-task-btn" onclick="addTask()">添加新任务</button>
+        </div>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
