@@ -49,16 +49,42 @@
                 creativity: document.getElementById('creativity').value
             };
 
+            // 移除未填写的字段
+            Object.keys(formData).forEach(key => {
+                if (!formData[key]) {
+                    delete formData[key];
+                }
+            });
+
+            // 如果没有填写任何字段，则提示并退出
+            if (Object.keys(formData).length === 0) {
+                alert("请至少填写一个字段！");
+                return;
+            }
+
             fetch('https://18.183.175.8/update_user_attributes/rex', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
             })
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok) {
+                    // 请求成功，显示成功提示
+                    alert("更新成功！");
+                    return response.json();
+                } else {
+                    // 请求失败，抛出错误
+                    throw new Error("更新失败！");
+                }
+            })
             .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                // 请求失败时显示错误提示
+                alert(error.message || "更新失败，请稍后重试！");
+                console.error('Error:', error);
+            });
         }
 
         // 查询用户属性
