@@ -49,7 +49,7 @@
                 creativity: document.getElementById('creativity').value
             };
 
-            fetch('http://18.183.175.8:5000/update_user_attributes/rex', {
+            fetch('https://18.183.175.8/update_user_attributes/rex', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -64,7 +64,7 @@
         // 查询用户属性
         function queryAttributes() {
             const username = document.getElementById('queryUsername').value;
-            fetch(`http://18.183.175.8:5000/get_user_attributes/${username}`, {
+            fetch(`https://18.183.175.8/get_user_attributes/${username}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
