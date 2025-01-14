@@ -1,38 +1,27 @@
-1 reference
-The script.js file contains multiple functions for incrementing, decrementing, adding, and deleting skills, updating the radar chart, and handling date-time updates. Here are the modifications to avoid redundancy and errors:
-
-Set the minimum value for attribute increment/decrement to 1.
-Set the radar chart's maximum limit to 100.
-Update the radar chart based on the queried username's results.
-Remove duplicate and redundant code.
-Updated script.js
-JavaScript
 function increment(id) {
     const input = document.getElementById(id);
-    if (parseInt(input.value) < 100) {
+    if (parseInt(input.value) < 5) {
         input.value = parseInt(input.value) + 1;
-        submitForm(); // Update attributes on the server
     }
 }
 
 function decrement(id) {
     const input = document.getElementById(id);
-    if (parseInt(input.value) > 1) {
+    if (parseInt(input.value) > 0) {
         input.value = parseInt(input.value) - 1;
-        submitForm(); // Update attributes on the server
     }
 }
 
 function incrementSkill(button) {
     const input = button.previousElementSibling;
-    if (parseInt(input.value) < 100) {
+    if (parseInt(input.value) < 5) {
         input.value = parseInt(input.value) + 1;
     }
 }
 
 function decrementSkill(button) {
     const input = button.nextElementSibling;
-    if (parseInt(input.value) > 1) {
+    if (parseInt(input.value) > 0) {
         input.value = parseInt(input.value) - 1;
     }
 }
@@ -45,7 +34,7 @@ function addSkill() {
         <button class="control-btn" onclick="decrementSkill(this)">-</button>
         <input type="text" value="0" class="value" readonly>
         <button class="control-btn" onclick="incrementSkill(this)">+</button>
-        <button class="delete-btn" onclick="deleteSkill(this)">删除</button>
+        <button class="delete-btn" onclick="deleteTask(this)">删除</button>
     `;
     skillsList.appendChild(newSkill);
 }
@@ -59,18 +48,22 @@ function showTooltip(message) {
     alert(message);
 }
 
+// 动态添加任务行
 function addTask() {
     const goalsList = document.getElementById("goals-list");
     const newTask = document.createElement("li");
+
     newTask.innerHTML = `
         <input type="text" placeholder="任务名称" class="task-name">
         开始日期: <input type="date" class="task-date">
         结束日期: <input type="date" class="task-date">
         <button class="delete-btn" onclick="deleteTask(this)">删除</button>
     `;
+
     goalsList.appendChild(newTask);
 }
 
+// 删除任务行
 function deleteTask(button) {
     const task = button.parentElement;
     task.remove();
@@ -110,12 +103,13 @@ const radarChart = new Chart(ctx, {
         scales: {
             r: {
                 beginAtZero: true,
-                max: 100,
+                max: 5,
             },
         },
     },
 });
 
+// 更新雷达图函数
 function updateRadarChart() {
     const attributes = [
         'strength',
@@ -133,14 +127,14 @@ function updateRadarChart() {
     radarChart.update();
 }
 
+// 更新属性值并刷新雷达图
 function updateAttribute(attr, delta) {
     const input = document.getElementById(attr);
-    const newValue = Math.max(1, Math.min(100, parseInt(input.value) + delta));
+    const newValue = Math.max(0, Math.min(5, parseInt(input.value) + delta));
     input.value = newValue;
     updateRadarChart();
-    submitForm(); // Update attributes on the server
 }
-
+// Update character attributes
 function submitForm() {
     const formData = {
         strength: document.getElementById('strength').value,
@@ -191,6 +185,7 @@ function submitForm() {
     });
 }
 
+// Query character attributes
 function queryAttributes() {
     const username = document.getElementById('queryUsername').value;
     fetch(`https://18.183.175.8/get_user_attributes/${username}`, {
@@ -204,28 +199,17 @@ function queryAttributes() {
         const resultDiv = document.getElementById('queryResult');
         if (data.attributes) {
             resultDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-            updateRadarChartWithValues(data.attributes);
         } else {
             resultDiv.innerHTML = `<p>${data.message || 'Error occurred'}</p>`;
         }
     })
     .catch(error => console.error('Error:', error));
 }
-
-function updateRadarChartWithValues(attributes) {
-    const attributeMapping = {
-        strength: 'strength',
-        agility: 'agility',
-        constitution: 'constitution',
-        intelligence: 'intelligence',
-        wisdom: 'wisdom',
-        charisma: 'charisma',
-        luck: 'luck',
-        creativity: 'creativity'
-    };
-    const chartData = radarChart.data.datasets[0].data;
-    Object.keys(attributeMapping).forEach((key, index) => {
-        chartData[index] = attributes[attributeMapping[key]] || 0;
-    });
-    radarChart.update();
+// Update attribute value and refresh radar chart
+function updateAttribute(attr, delta) {
+    const input = document.getElementById(attr);
+    const newValue = Math.max(0, Math.min(5, parseInt(input.value) + delta));
+    input.value = newValue;
+    updateRadarChart();
+    submitForm(); // Update attributes on the server
 }
