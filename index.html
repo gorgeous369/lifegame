@@ -82,6 +82,18 @@
             </button>
         </div>
 
+        <!-- Add a form section to query attributes -->
+<div class="panel query-attributes-panel">
+    <h2>查询用户属性</h2>
+    <form id="queryForm">
+        <label for="queryUsername">Username:</label>
+        <input type="text" id="queryUsername" name="queryUsername" placeholder="Enter username"><br><br>
+        <button type="button" onclick="queryAttributes()">查询</button>
+    </form>
+    <h2>查询结果</h2>
+    <div id="queryResult"></div>
+</div>
+
         <!-- 角色技能 -->
         <div class="panel skills-panel">
             <h2>角色技能</h2>
@@ -171,6 +183,11 @@
         <!-- 如果想在页面中查看加载结果提示，可放一个id="queryResult" -->
         <div id="queryResult" style="margin-top: 1rem; color: green;"></div>
     </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
 
     <script src="script.js"></script>
 </body>
