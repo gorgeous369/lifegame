@@ -119,39 +119,56 @@
                     <input type="text" id="health" class="value" value="0" oninput="updateStatus('health', 0)">
                     <button class="control-btn" onclick="increment('health')">+</button>
                     <select>
-                        <option>非常差</option>
-                        <option>差</option>
-                        <option>一般</option>
-                        <option>良好</option>
-                        <option>非常好</option>
+                        <option>非常差,-10行动点</option>
+                        <option>差，-5行动点</option>
+                        <option>一般，不增加行动点</option>
+                        <option>良好，额外+10行动点</option>
+                        <option>非常好，额外+20行动点</option>
                     </select>
                 </li>
                 <li>
-                    能量状态:
+                    能量状态（Energy）:
+                    <button class="control-btn" onclick="decrement('energy')">-</button>
+                    <input type="text" id="health" class="value" value="0" oninput="updateStatus('energy', 0)">
+                    <button class="control-btn" onclick="increment('energy')">+</button>
                     <select>
-                        <option>能量充足</option>
-                        <option>能量不足</option>
-                        <option>能量耗尽</option>
+                        <option>非常低,-10行动点</option>
+                        <option>低，-5行动点</option>
+                        <option>中等，不增加行动点</option>
+                        <option>高，额外+10行动点</option>
+                        <option>非常高，额外+15行动点</option>
                     </select>
                 </li>
                 <li>
-                    疲劳状态:
+                    疲劳状态（Fatigue）:
+                    <button class="control-btn" onclick="decrement('fatigue')">-</button>
+                    <input type="text" id="health" class="value" value="0" oninput="updateStatus('fatigue', 0)">
+                    <button class="control-btn" onclick="increment('fatigue')">+</button>
                     <select>
-                        <option>精力充沛</option>
-                        <option>正常精力</option>
-                        <option>精疲力竭</option>
+                        <option>非常低,-15行动点</option>
+                        <option>低，-10行动点</option>
+                        <option>中等，不增加行动点</option>
+                        <option>高，额外+5行动点</option>
+                        <option>非常高，额外+10行动点</option>
                     </select>
                 </li>
                 <li>
-                    心理状态:
+                    心理状态（Mental）:
+                    <button class="control-btn" onclick="decrement('mental')">-</button>
+                    <input type="text" id="health" class="value" value="0" oninput="updateStatus('mental', 0)">
+                    <button class="control-btn" onclick="increment('mental')">+</button>
                     <select>
-                        <option>士气高昂</option>
-                        <option>正常</option>
-                        <option>恐惧</option>
-                        <option>愤怒</option>
+                        <option>痛苦,-10行动点</option>
+                        <option>不稳定，-5行动点</option>
+                        <option>稳定，不增加行动点</option>
+                        <option>积极，额外+10行动点</option>
+                        <option>优秀，额外+15行动点</option>
                     </select>
                 </li>
             </ul>
+            <button id="saveBtn" onclick="saveStatus()" style="margin-top: 1rem;">
+                保存
+            </button>
         </div>
 
         <div class="panel goals-panel">
