@@ -114,13 +114,16 @@
             <h2>角色状态</h2>
             <ul>
                 <li>
-                    健康状态:
+                    健康状态（Health）:
+                    <button class="control-btn" onclick="decrement('health')">-</button>
+                    <input type="text" id="health" class="value" value="0" oninput="updateStatus('health', 0)">
+                    <button class="control-btn" onclick="increment('health')">+</button>
                     <select>
-                        <option>正常</option>
-                        <option>受伤</option>
-                        <option>重伤</option>
-                        <option>濒死</option>
-                        <option>死亡</option>
+                        <option>非常差</option>
+                        <option>差</option>
+                        <option>一般</option>
+                        <option>良好</option>
+                        <option>非常好</option>
                     </select>
                 </li>
                 <li>
