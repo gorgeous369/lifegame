@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Test Task APIs</title>
+</head>
+<body>
+  <!-- ==================== 服务器地址配置 ==================== -->
+  <script>
+    // 修改此处为你的实际服务器地址或 IP + 端口
+    const SERVER_URL = 'https://18.183.175.8';
+  </script>
+
+  <!-- ==================== 查询单个任务 ==================== -->
+  <h1>Test /get_task/&lt;taskid&gt;</h1>
+  <form id="getTaskForm">
+    <div>
+      <label for="get_taskid">Task ID:</label>
+      <input type="number" id="get_taskid" name="get_taskid" placeholder="如：1">
+    </div>
+    <br>
+    <button type="submit">查询单个任务</button>
+  </form>
+
+  <hr>
+
+  <!-- ==================== 查询全部任务(可带筛选) ==================== -->
+  <h1>Test /get_tasks</h1>
+  <p>可选参数：<code>?username=xxx</code> 和/或 <code>?status=0</code></p>
+  <form id="getTasksForm">
+    <div>
+      <label for="filter_username">Username (可选):</label>
+      <input type="text" id="filter_username" name="filter_username" placeholder="如：rex">
+    </div>
+    <br>
+    <div>
+      <label for="filter_status">Status (可选):</label>
+      <input type="text" id="filter_status" name="filter_status" placeholder="如：0">
+    </div>
+    <br>
+    <button type="submit">查询所有任务</button>
+  </form>
+
+  <hr>
+
+  <!-- ==================== 添加任务 ==================== -->
+  <h1>Test /add_task</h1>
+  <form id="addTaskForm">
+    <div>
+      <label for="userid">User ID:</label>
+      <input type="text" id="userid" name="userid" placeholder="如：rex">
+    </div>
+    <br>
+    <div>
+      <label for="username">User Name:</label>
+      <input type="text" id="username" name="username" placeholder="如：rex">
+    </div>
+    <br>
+    <div>
+      <label for="taskname">Task Name:</label>
+      <input type="text" id="taskname" name="taskname" placeholder="如：完成论文方法描述">
+    </div>
+    <br>
+    <div>
+      <label for="tasklevel">Task Level:</label>
+      <input type="number" id="tasklevel" name="tasklevel" placeholder="如：1">
+    </div>
+    <br>
+    <div>
+      <label for="point">Point:</label>
+      <input type="number" id="point" name="point" placeholder="如：10">
+    </div>
+    <br>
+    <div>
+      <label for="attribute">Attribute (JSON):</label>
+      <input type="text" id="attribute" name="attribute" placeholder='如：{"wisdom":1}'>
+    </div>
+    <br>
+    <div>
+      <label for="skill">Skill (JSON):</label>
+      <input type="text" id="skill" name="skill" placeholder='如：{"写作":1}'>
+    </div>
+    <br>
+    <div>
+      <label for="bonus">Bonus:</label>
+      <input type="number" id="bonus" name="bonus" placeholder="如：0">
+    </div>
+    <br>
+    <div>
+      <label for="starttime">Start Time:</label>
+      <input type="text" id="starttime" name="starttime" placeholder="如：2025-01-19 15:30:00">
+    </div>
+    <br>
+    <div>
+      <label for="endtime">End Time:</label>
+      <input type="text" id="endtime" name="endtime" placeholder="如：2025-01-19 16:30:00">
+    </div>
+    <br>
+    <div>
+      <label for="status">Status:</label>
+      <input type="number" id="status" name="status" placeholder="如：0">
+    </div>
+    <br>
+    <button type="submit">添加任务</button>
+  </form>
+
+  <hr>
+
+  <!-- ==================== 删除任务 ==================== -->
+  <h1>Test /delete_task/&lt;taskid&gt;</h1>
+  <form id="deleteTaskForm">
+    <div>
+      <label for="delete_taskid">Task ID to Delete:</label>
+      <input type="number" id="delete_taskid" name="delete_taskid" placeholder="如：1">
+    </div>
+    <br>
+    <button type="submit">删除任务</button>
+  </form>
+
+  <hr>
+
+  <!-- ==================== 更新任务 ==================== -->
+  <h1>Test /update_task/&lt;taskid&gt;</h1>
+  <form id="updateTaskForm">
+    <div>
+      <label for="update_taskid">Task ID to Update:</label>
+      <input type="number" id="update_taskid" name="update_taskid" placeholder="如：2">
+    </div>
+    <br>
+    <div>
+      <label for="update_taskname">Task Name (可选):</label>
+      <input type="text" id="update_taskname" name="update_taskname" placeholder="如：修改后的任务名称">
+    </div>
+    <br>
+    <div>
+      <label for="update_skill">Skill (JSON) (可选):</label>
+      <input type="text" id="update_skill" name="update_skill" placeholder='如：{"写作":2}'>
+    </div>
+    <br>
+    <div>
+      <label for="update_bonus">Bonus (可选):</label>
+      <input type="number" id="update_bonus" name="update_bonus" placeholder="如：5">
+    </div>
+    <br>
+    <button type="submit">更新任务</button>
+  </form>
+
+  <!-- ==================== JavaScript脚本区 ==================== -->
+  <script>
+    /*
+     * 辅助函数：安全地解析 JSON 字符串
+     * 如果不是有效的 JSON，就返回 null
+     */
+    function parseJSONSafe(str) {
+      if (!str || !str.trim()) return null;
+      try {
+        return JSON.parse(str);
+      } catch (e) {
+        console.warn('JSON 解析失败:', e);
+        return null;
+      }
+    }
+
+    // ========== 1. 查询单个任务 ========== 
+    document.getElementById('getTaskForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const taskid = document.getElementById('get_taskid').value.trim();
+
+      if (!taskid) {
+        alert("请输入 Task ID");
+        return;
+      }
+
+      fetch(`${SERVER_URL}/get_task/${taskid}`, {
+        method: 'GET'
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        alert('查询单个任务返回: ' + JSON.stringify(data));
+        console.log('查询单个任务返回:', data);
+      })
+      .catch(error => {
+        alert('查询单个任务出现错误: ' + error);
+        console.error(error);
+      });
+    });
+
+    // ========== 2. 查询全部任务(可带筛选) ========== 
+    document.getElementById('getTasksForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const usernameFilter = document.getElementById('filter_username').value.trim();
+      const statusFilter   = document.getElementById('filter_status').value.trim();
+
+      // 构造查询字符串 ?username=xxx&status=xxx
+      let queryParams = [];
+      if (usernameFilter) {
+        queryParams.push(`username=${encodeURIComponent(usernameFilter)}`);
+      }
+      if (statusFilter) {
+        queryParams.push(`status=${encodeURIComponent(statusFilter)}`);
+      }
+      let queryString = queryParams.length > 0 ? ('?' + queryParams.join('&')) : '';
+
+      fetch(`${SERVER_URL}/get_tasks${queryString}`, {
+        method: 'GET'
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        alert('查询任务列表返回: ' + JSON.stringify(data));
+        console.log('查询任务列表返回:', data);
+      })
+      .catch(error => {
+        alert('查询任务列表出现错误: ' + error);
+        console.error(error);
+      });
+    });
+
+    // ========== 3. 添加任务 ========== 
+    document.getElementById('addTaskForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const data = {
+        userid: document.getElementById('userid').value.trim(),
+        username: document.getElementById('username').value.trim(),
+        taskname: document.getElementById('taskname').value.trim(),
+        tasklevel: parseInt(document.getElementById('tasklevel').value, 10) || null,
+        point: parseInt(document.getElementById('point').value, 10) || null,
+        attribute: parseJSONSafe(document.getElementById('attribute').value),
+        skill: parseJSONSafe(document.getElementById('skill').value),
+        bonus: parseInt(document.getElementById('bonus').value, 10) || null,
+        starttime: document.getElementById('starttime').value.trim(),
+        endtime: document.getElementById('endtime').value.trim(),
+        status: parseInt(document.getElementById('status').value, 10) || null
+      };
+
+      // 发起 POST
+      fetch(`${SERVER_URL}/add_task`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(resData => {
+        alert('添加任务返回: ' + JSON.stringify(resData));
+        console.log('添加任务返回：', resData);
+      })
+      .catch(error => {
+        alert('添加任务出现错误: ' + error);
+        console.error(error);
+      });
+    });
+
+    // ========== 4. 删除任务 ========== 
+    document.getElementById('deleteTaskForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const taskid = document.getElementById('delete_taskid').value.trim();
+
+      if (!taskid) {
+        alert("请输入要删除的 Task ID");
+        return;
+      }
+
+      fetch(`${SERVER_URL}/delete_task/${taskid}`, {
+        method: 'POST'
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(resData => {
+        alert('删除任务返回: ' + JSON.stringify(resData));
+        console.log('删除任务返回：', resData);
+      })
+      .catch(error => {
+        alert('删除任务出现错误: ' + error);
+        console.error(error);
+      });
+    });
+
+    // ========== 5. 更新任务 ========== 
+    document.getElementById('updateTaskForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const taskid = document.getElementById('update_taskid').value.trim();
+
+      if (!taskid) {
+        alert("请输入要更新的 Task ID");
+        return;
+      }
+
+      // 只添加用户填写的字段
+      const data = {};
+      const tasknameVal = document.getElementById('update_taskname').value.trim();
+      const skillVal    = document.getElementById('update_skill').value.trim();
+      const bonusVal    = document.getElementById('update_bonus').value.trim();
+
+      if (tasknameVal) data.taskname = tasknameVal;
+      if (skillVal)    data.skill = parseJSONSafe(skillVal);
+      if (bonusVal)    data.bonus = parseInt(bonusVal, 10);
+
+      // 发起 POST
+      fetch(`${SERVER_URL}/update_task/${taskid}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(resData => {
+        alert('更新任务返回: ' + JSON.stringify(resData));
+        console.log('更新任务返回：', resData);
+      })
+      .catch(error => {
+        alert('更新任务出现错误: ' + error);
+        console.error(error);
+      });
+    });
+  </script>
+</body>
+</html>
