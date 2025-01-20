@@ -924,7 +924,7 @@ function saveStatus() {
 
     // 收集所有输入框
     const rawStatus = {};
-    document.querySelectorAll('#status-list input').forEach(input => {
+    document.querySelectorAll('.panel.status-panel ul li input').forEach(input => {
         rawStatus[input.id] = parseInt(input.value) || 0;
     });
 
@@ -942,13 +942,22 @@ function saveStatus() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(status)
     })
-    .then(response => {
-        if (response.ok) {
+    .then(response => response.json().then(data => ({
+        status: response.status,
+        body: data
+    })))
+    .then(({ status, body }) => {
+        if (status === 200) {
+            alert(body.message || '状态已成功保存！');
             console.log('状态已成功保存！');
             window.hasUnsavedChanges = false;
         } else {
-            throw new Error('保存失败！');
+            alert(body.error || body.message || '保存失败！');
+            throw new Error(body.error || '保存失败！');
         }
     })
-    .catch(error => console.error(error.message));
+    .catch(error => {
+        console.error(error.message);
+        alert(`保存失败: ${error.message}`);
+    });
 }
