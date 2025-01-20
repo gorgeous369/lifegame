@@ -98,86 +98,87 @@
             <script src="script.js"></script>
         </div>
 
-        <!-- ===================== 角色状态面板（示例） ===================== -->
-        <div class="panel status-panel">
-            <h2>角色状态</h2>
-            <ul>
-                <li>
-                    健康状态（Health）:
-                    <button class="control-btn" onclick="decrement('health')">-</button>
-                    <input type="text" id="health" class="value" value="0" oninput="updateStatus('health', 0)">
-                    <button class="control-btn" onclick="increment('health')">+</button>
-                    <select>
-                        <option>非常差,-10行动点</option>
-                        <option>差，-5行动点</option>
-                        <option>一般，不增加行动点</option>
-                        <option>良好，额外+10行动点</option>
-                        <option>非常好，额外+20行动点</option>
-                    </select>
-                </li>
-                <li>
-                    能量状态（Energy）:
-                    <button class="control-btn" onclick="decrement('energy')">-</button>
-                    <input type="text" id="energy" class="value" value="0" oninput="updateStatus('energy', 0)">
-                    <button class="control-btn" onclick="increment('energy')">+</button>
-                    <select>
-                        <option>非常低,-10行动点</option>
-                        <option>低，-5行动点</option>
-                        <option>中等，不增加行动点</option>
-                        <option>高，额外+10行动点</option>
-                        <option>非常高，额外+15行动点</option>
-                    </select>
-                </li>
-                <li>
-                    疲劳状态（Fatigue）:
-                    <button class="control-btn" onclick="decrement('fatigue')">-</button>
-                    <input type="text" id="fatigue" class="value" value="0" oninput="updateStatus('fatigue', 0)">
-                    <button class="control-btn" onclick="increment('fatigue')">+</button>
-                    <select>
-                        <option>非常低,-15行动点</option>
-                        <option>低，-10行动点</option>
-                        <option>中等，不增加行动点</option>
-                        <option>高，额外+5行动点</option>
-                        <option>非常高，额外+10行动点</option>
-                    </select>
-                </li>
-                <li>
-                    心理状态（Mental）:
-                    <button class="control-btn" onclick="decrement('mental')">-</button>
-                    <input type="text" id="mental" class="value" value="0" oninput="updateStatus('mental', 0)">
-                    <button class="control-btn" onclick="increment('mental')">+</button>
-                    <select>
-                        <option>痛苦,-10行动点</option>
-                        <option>不稳定，-5行动点</option>
-                        <option>稳定，不增加行动点</option>
-                        <option>积极，额外+10行动点</option>
-                        <option>优秀，额外+15行动点</option>
-                    </select>
-                </li>
-            </ul>
-            <button id="saveBtn" onclick="saveStatus()" style="margin-top: 1rem;">
-                保存
-            </button>
-        </div>
+<!-- ===================== 角色状态面板（示例） ===================== -->
+<div class="panel status-panel">
+    <h2>角色状态</h2>
+    <ul id="status-list"></ul>
+    <ul>
+        <li>
+            健康状态（Health）:
+            <button class="control-btn" onclick="decrementStatus('health')">-</button>
+            <input type="text" id="health" class="value" value="0" oninput="updateStatus('health', 0)">
+            <button class="control-btn" onclick="incrementStatus('health')">+</button>
+            <select id="health-select">
+                <option value="-10">非常差,-10行动点</option>
+                <option value="-5">差，-5行动点</option>
+                <option value="0">一般，不增加行动点</option>
+                <option value="10">良好，额外+10行动点</option>
+                <option value="20">非常好，额外+20行动点</option>
+            </select>
+            <canvas id="healthChart" width="50" height="20"></canvas>
+        </li>
+        <li>
+            能量状态（Energy）:
+            <button class="control-btn" onclick="decrementStatus('energy')">-</button>
+            <input type="text" id="energy" class="value" value="0" oninput="updateStatus('energy', 0)">
+            <button class="control-btn" onclick="incrementStatus('energy')">+</button>
+            <select id="energy-select">
+                <option value="-10">非常低,-10行动点</option>
+                <option value="-5">低，-5行动点</option>
+                <option value="0">中等，不增加行动点</option>
+                <option value="10">高，额外+10行动点</option>
+                <option value="15">非常高，额外+15行动点</option>
+            </select>
+            <canvas id="energyChart" width="50" height="20"></canvas>
+        </li>
+        <li>
+            疲劳状态（Fatigue）:
+            <button class="control-btn" onclick="decrementStatus('fatigue')">-</button>
+            <input type="text" id="fatigue" class="value" value="0" oninput="updateStatus('fatigue', 0)">
+            <button class="control-btn" onclick="incrementStatus('fatigue')">+</button>
+            <select id="fatigue-select">
+                <option value="-15">非常低,-15行动点</option>
+                <option value="-10">低，-10行动点</option>
+                <option value="0">中等，不增加行动点</option>
+                <option value="5">高，额外+5行动点</option>
+                <option value="10">非常高，额外+10行动点</option>
+            </select>
+            <canvas id="fatigueChart" width="50" height="20"></canvas>
+        </li>
+        <li>
+            心理状态（Mental）:
+            <button class="control-btn" onclick="decrementStatus('mental')">-</button>
+            <input type="text" id="mental" class="value" value="0" oninput="updateStatus('mental', 0)">
+            <button class="control-btn" onclick="incrementStatus('mental')">+</button>
+            <select id="mental-select">
+                <option value="-10">痛苦,-10行动点</option>
+                <option value="-5">不稳定，-5行动点</option>
+                <option value="0">稳定，不增加行动点</option>
+                <option value="10">积极，额外+10行动点</option>
+                <option value="15">优秀，额外+15行动点</option>
+            </select>
+            <canvas id="mentalChart" width="50" height="20"></canvas>
+        </li>
+    </ul>
+    <button id="saveStatusBtn" onclick="saveStatus()" style="margin-top: 1rem;">
+        保存
+    </button>
+</div>
 
-        <!-- ===================== 目标及任务面板（示例） ===================== -->
-        <div class="panel goals-panel">
-            <h2>目标及任务</h2>
-            <ul id="goals-list">
-                <li>
-                    <input type="text" placeholder="任务" class="task-name">
-                    开始日期: <input type="date" class="task-date">
-                    结束日期: <input type="date" class="task-date">
-                    <button class="delete-btn" onclick="deleteTask(this)">删除</button>
-                </li>
+        <!-- ===================== 目标及任务面板 ===================== -->
+        <div class="panel tasks-panel">
+            <h2>任务列表</h2>
+            <ul id="tasks-list">
+                <!-- 页面加载后会由脚本自动填充 -->
             </ul>
-            <button class="add-task-btn" onclick="addTask()">添加新任务</button>
+            <button onclick="onAddTaskClicked()">添加任务</button>
         </div>
 
         <!-- 加载提示区域 -->
         <div id="queryResult" style="margin-top: 1rem; color: green;"></div>
 
-        <h1>Bonus 测试页面</h1>
+        <!-- ===================== 奖励面板 ===================== -->
+        <h1>奖励</h1>
         <!-- Bonus 列表 -->
         <ul id="bonus-list">
             <!-- 查询到的 bonus 会动态插入到这里 -->
