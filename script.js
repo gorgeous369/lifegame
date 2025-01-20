@@ -11,6 +11,7 @@ window.onload = function () {
     // 1. 加载用户属性 & 更新雷达图
     fetchAttributes();
     fetchSkills();
+    fetchBonus();
     // 绑定“添加技能”按钮事件
     document.getElementById('btnAddSkill').addEventListener('click', onAddSkillClicked);
 };
@@ -411,4 +412,136 @@ function deleteTask(button) {
     if (button && button.parentElement) {
         button.parentElement.remove();
     }
+}
+
+/**********************************************
+ * bonus 增删查
+ **********************************************/
+
+/**
+ * 查询并加载当前用户的所有 bonus
+ */
+function fetchBonus() {
+    // 假设后端接口是 /get_bonus_by_user/<username>
+    fetch(`${SERVER_URL}/get_bonus_by_user/${CURRENT_USERNAME}`, {
+        method: 'GET'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`查询 bonus 失败: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('后端返回:', data);
+
+        // 验证 bonus_list 是否存在且是数组
+        if (!data.bonus_list || !Array.isArray(data.bonus_list)) {
+            throw new Error('后端返回格式不符合预期，bonus_list 不存在或不是数组');
+        }
+        
+        // 清空当前列表
+        const ul = document.getElementById('bonus-list');
+        ul.innerHTML = '';
+    
+        // 遍历 bonus 数组
+        data.bonus_list.forEach(b => {
+            // 创建 <li>
+            const li = document.createElement('li');
+            // 显示格式示例: “奖励名称(积分)”
+            li.textContent = `${b.bonusname} (${b.bonuspoint})`;
+
+            // 删除按钮
+            const btnDelete = document.createElement('button');
+            btnDelete.textContent = '删除';
+            btnDelete.onclick = function() {
+                deleteBonus(b.bonusid, li);
+            };
+            li.appendChild(btnDelete);
+    
+            // 将 li 加到 ul
+            ul.appendChild(li);
+        });
+    })
+    .catch(error => {
+        console.error('加载 bonus 出错：', error);
+        alert('加载 bonus 出错：' + error.message);
+    });
+}
+
+/**
+ * 添加一条 bonus
+ */
+function onAddBonusClicked() {
+    // 简单用 prompt 获取 bonus 名称
+    const bonusName = prompt('请输入 bonus 名称:');
+    if (!bonusName) return; // 用户取消或空输入则不继续
+
+    // 获取积分
+    const pointStr = prompt('请输入 bonus 积分(数字):', '0');
+    const bonusPoint = parseInt(pointStr, 10) || 0;
+
+    addBonus(bonusName.trim(), bonusPoint);
+}
+
+/** 向后端发送添加 bonus 请求 */
+function addBonus(bonusName, bonusPoint) {
+    const payload = {
+        username: CURRENT_USERNAME,
+        bonusname: bonusName,
+        bonuspoint: bonusPoint
+    };
+
+    // 假设后端接口是 /add_bonus
+    fetch(`${SERVER_URL}/add_bonus`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`添加 bonus 失败: ${response.status}`);
+        }
+        return response.json(); // 假设返回 { "status": "ok" } 之类
+    })
+    .then(data => {
+        console.log('添加 bonus 成功:', data);
+        // 添加成功后重新拉取刷新页面
+        fetchBonus();
+    })
+    .catch(err => {
+        console.error('添加 bonus 出错：', err);
+        alert('添加 bonus 出错：' + err.message);
+    });
+}
+
+/**
+ * 删除一条 bonus
+ */
+function deleteBonus(bonusId) {
+    // 调用后端的删除接口
+    fetch(`${SERVER_URL}/delete_bonus`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: CURRENT_USERNAME, bonusid: bonusId }) // 包含 username 和 bonusid
+    })
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('未找到要删除的 Bonus。');
+            } else {
+                throw new Error(`删除 bonus 失败: ${response.status}`);
+            }
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('删除 bonus 成功:', data);
+        // 成功后重新加载列表
+        fetchBonus();
+    })
+    .catch(err => {
+        console.error('删除 bonus 出错：', err.message);
+        alert('删除 bonus 出错：' + err.message);
+    });
 }

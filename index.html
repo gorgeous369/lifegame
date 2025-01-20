@@ -87,6 +87,7 @@
         <!-- ===================== 角色技能面板 ===================== -->
         <div class="panel skills-panel">
             <h1>技能列表</h1>
+            <div id="loading-indicator" style="display: none;">加载中...</div>
             <ul id="skills-list">
                 <!-- 页面加载后会由脚本自动填充 -->
             </ul>
@@ -175,8 +176,14 @@
 
         <!-- 加载提示区域 -->
         <div id="queryResult" style="margin-top: 1rem; color: green;"></div>
-    </div>
 
+        <h1>Bonus 测试页面</h1>
+        <!-- Bonus 列表 -->
+        <ul id="bonus-list">
+            <!-- 查询到的 bonus 会动态插入到这里 -->
+        </ul>
+        <button onclick="onAddBonusClicked()">添加 Bonus</button>
+    </div>
     <!-- JS脚本放在 body 底部 -->
     <script src="script.js"></script>
 </body>
