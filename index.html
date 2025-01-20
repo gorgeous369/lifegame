@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- 这里示例使用 Chart.js CDN，如无需要也可去掉 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>游戏人生系统 (LifeGame-Master)</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css"><!-- 如需，可引用你的 CSS -->
 </head>
 <body>
     <div class="container">
         <h1 class="title">游戏人生系统 (LifeGame-Master)</h1>
         <div id="datetime" style="font-size: 2rem;text-align: center;"></div>
-        <!-- 角色属性 -->
+
+        <!-- ===================== 角色属性面板 ===================== -->
         <div class="panel attributes-panel">
             <h2>角色属性</h2>
             <!-- 雷达图 -->
@@ -66,14 +68,14 @@
                     幸运（Luck）
                     <button class="info-btn" onclick="showTooltip('指获得机会的能力。')">i</button>
                     <button class="control-btn" onclick="decrement('luck')">-</button>
-                    <input type="text" id="luck" class="value" value="0"oninput="updateAttribute('luck', 0)">
+                    <input type="text" id="luck" class="value" value="0" oninput="updateAttribute('luck', 0)">
                     <button class="control-btn" onclick="increment('luck')">+</button>
                 </li>
                 <li>
                     创造力（Creativity）
                     <button class="info-btn" onclick="showTooltip('指创新思维和解决问题的能力。')">i</button>
                     <button class="control-btn" onclick="decrement('creativity')">-</button>
-                    <input type="text" id="creativity" class="value" value="0"oninput="updateAttribute('creativity', 0)">
+                    <input type="text" id="creativity" class="value" value="0" oninput="updateAttribute('creativity', 0)">
                     <button class="control-btn" onclick="increment('creativity')">+</button>
                 </li>
             </ul>
@@ -82,22 +84,20 @@
             </button>
         </div>
 
-        <!-- 角色技能 -->
+        <!-- ===================== 角色技能面板 ===================== -->
         <div class="panel skills-panel">
-            <h2>角色技能</h2>
+            <h1>技能列表</h1>
             <ul id="skills-list">
-                <li>
-                    <input type="text" placeholder="技能名称" class="skill-name">
-                    <button class="control-btn" onclick="decrementSkill(this)">-</button>
-                    <input type="text" value="0" class="value" readonly>
-                    <button class="control-btn" onclick="incrementSkill(this)">+</button>
-                    <button class="delete-btn" onclick="deleteSkill(this)">删除</button>
-                </li>
+                <!-- 页面加载后会由脚本自动填充 -->
             </ul>
-            <button class="add-task-btn" onclick="addSkill()">添加新技能</button>
+            <!-- 底部的“添加”按钮 -->
+            <button id="btnAddSkill">添加</button>
+        
+            <!-- 引入外部脚本 -->
+            <script src="script.js"></script>
         </div>
 
-        <!-- 角色状态 -->
+        <!-- ===================== 角色状态面板（示例） ===================== -->
         <div class="panel status-panel">
             <h2>角色状态</h2>
             <ul>
@@ -159,6 +159,7 @@
             </button>
         </div>
 
+        <!-- ===================== 目标及任务面板（示例） ===================== -->
         <div class="panel goals-panel">
             <h2>目标及任务</h2>
             <ul id="goals-list">
@@ -171,16 +172,12 @@
             </ul>
             <button class="add-task-btn" onclick="addTask()">添加新任务</button>
         </div>
-        
-        <!-- 如果想在页面中查看加载结果提示，可放一个id="queryResult" -->
+
+        <!-- 加载提示区域 -->
         <div id="queryResult" style="margin-top: 1rem; color: green;"></div>
     </div>
 
-    <script src="script.js"></script>
-</body>
-</html>
-
-
+    <!-- JS脚本放在 body 底部 -->
     <script src="script.js"></script>
 </body>
 </html>
