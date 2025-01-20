@@ -12,6 +12,7 @@ window.onload = function () {
     fetchAttributes();
     fetchSkills();
     fetchBonus();
+    fetchCurrentPoint();
     // 绑定“添加技能”按钮事件
     document.getElementById('btnAddSkill').addEventListener('click', onAddSkillClicked);
 };
@@ -543,5 +544,36 @@ function deleteBonus(bonusId) {
     .catch(err => {
         console.error('删除 bonus 出错：', err.message);
         alert('删除 bonus 出错：' + err.message);
+    });
+}
+
+
+
+function fetchCurrentPoint() {
+    // 假设后端接口是 /get_user_point/<username>
+    fetch(`${SERVER_URL}/get_user_point/${CURRENT_USERNAME}`, {
+        method: 'GET'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`查询 currentpoint 失败: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('后端返回:', data);
+
+        // 验证返回的对象是否包含 currentpoint
+        if (!data.currentpoint) {
+            throw new Error('后端返回格式不符合预期或 currentpoint 不存在');
+        }
+        
+        // 更新页面上的积分显示
+        const pointDisplay = document.getElementById('current-point');
+        pointDisplay.textContent = `当前积分: ${data.currentpoint}`;
+    })
+    .catch(error => {
+        console.error('加载 currentpoint 出错：', error);
+        alert('加载 currentpoint 出错：' + error.message);
     });
 }

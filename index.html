@@ -183,6 +183,13 @@
             <!-- 查询到的 bonus 会动态插入到这里 -->
         </ul>
         <button onclick="onAddBonusClicked()">添加 Bonus</button>
+
+    <h1>用户当前积分</h1>
+    <!-- 显示当前积分的区域 -->
+    <p id="current-point">当前积分: 加载中...</p>
+    
+    <!-- 查询按钮 -->
+    <button onclick="fetchCurrentPoint()">查询当前积分</button>
     </div>
     <!-- JS脚本放在 body 底部 -->
     <script src="script.js"></script>
