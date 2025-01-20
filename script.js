@@ -78,7 +78,7 @@ function updateRadarChart() {
     const attributes = [
         'strength',
         'agility',
-        'constitution',
+        'endurance',
         'intelligence',
         'wisdom',
         'charisma',
@@ -152,7 +152,7 @@ function saveAttributes() {
     const ALLOWED_KEYS = [
         'strength',
         'agility',
-        'constitution',
+        'endurance',
         'intelligence',
         'wisdom',
         'charisma',
