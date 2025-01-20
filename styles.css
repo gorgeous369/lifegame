@@ -101,3 +101,20 @@ li {
     max-width: 100%;
     margin: 0 auto;
 }
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+    color: transparent;
+}
+input:-moz-placeholder,
+textarea:-moz-placeholder {
+    color: transparent;
+}
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+    color: transparent;
+}
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+    color: transparent;
+}
