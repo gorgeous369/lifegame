@@ -182,6 +182,7 @@ function saveAttributes() {
     })
     .then(response => {
         if (response.ok) {
+            alert('状态已成功保存！');
             console.log('属性已成功保存！');
             window.hasUnsavedChanges = false;
         } else {
