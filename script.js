@@ -9,11 +9,13 @@ const CURRENT_USERNAME = 'rex';            // 当前用户(示例)
  ********************************************************/
 window.onload = function () {
     // 1. 加载用户属性 & 更新雷达图
+    initializeStatusCharts();
     fetchAttributes();
     fetchSkills();
     fetchBonus();
     fetchCurrentPoint();
     fetchTasks();
+    fetchStatus(); // 加载用户状态
     // 绑定“添加技能”按钮事件
     document.getElementById('btnAddSkill').addEventListener('click', onAddSkillClicked);
 };
@@ -771,4 +773,182 @@ function deleteTask(taskId) {
         console.error('删除 task 出错：', err.message);
         alert('删除 task 出错：' + err.message);
     });
+}
+
+/********************************************************
+ * 状态面板
+ ********************************************************/
+
+// 初始化条形图
+let statusCharts = {};
+
+function initializeStatusCharts() {
+    const statuses = ['health', 'energy', 'fatigue', 'mental'];
+    const colors = {
+        health: 'rgba(255, 99, 132, 0.2)',
+        energy: 'rgba(54, 162, 235, 0.2)',
+        fatigue: 'rgba(255, 159, 64, 0.2)',
+        mental: 'rgba(75, 192, 192, 0.2)'
+    };
+    const borderColors = {
+        health: 'rgba(255, 99, 132, 1)',
+        energy: 'rgba(54, 162, 235, 1)',
+        fatigue: 'rgba(255, 159, 64, 1)',
+        mental: 'rgba(75, 192, 192, 1)'
+    };
+    statuses.forEach(status => {
+        const ctx = document.getElementById(`${status}Chart`).getContext('2d');
+        statusCharts[status] = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [''],
+                datasets: [{
+                    label: status,
+                    data: [0],
+                    backgroundColor: colors[status],
+                    borderColor: borderColors[status],
+                    borderWidth: 2,
+                }],
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 5,
+                        ticks: {
+                            stepSize: 1, // 只显示整数刻度
+                            padding: 2 // 调整刻度之间的间隔长度
+                        }
+                    },
+                    y: {
+                        display: false,
+                    },
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                },
+            },
+        });
+    });
+}
+
+// 更新条形图数据
+function updateStatusCharts() {
+    const statuses = ['health', 'energy', 'fatigue', 'mental'];
+    statuses.forEach(status => {
+        if (statusCharts[status]) {
+            statusCharts[status].data.datasets[0].data[0] = parseInt(document.getElementById(status).value) || 0;
+            statusCharts[status].update();
+        }
+    });
+}
+
+// 状态增减
+function incrementStatus(id) {
+    const input = document.getElementById(id);
+    if (parseInt(input.value) < 5) {
+        input.value = parseInt(input.value) + 1;
+        updateStatus(id, 0);
+    }
+}
+
+function decrementStatus(id) {
+    const input = document.getElementById(id);
+    if (parseInt(input.value) > 0) {
+        input.value = parseInt(input.value) - 1;
+        updateStatus(id, 0);
+    }
+}
+
+// 更新状态值（带条形图刷新）
+function updateStatus(status, delta) {
+    const input = document.getElementById(status);
+    if (input) {
+        let newValue = parseInt(input.value) || 0;
+        newValue += delta;
+        newValue = Math.max(0, Math.min(5, newValue));
+        input.value = newValue;
+    }
+    window.hasUnsavedChanges = true;
+    updateStatusCharts();
+}
+
+// 从后端获取状态
+function fetchStatus() {
+    fetch(`${SERVER_URL}/get_user_status/${CURRENT_USERNAME}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status) {
+            const status = data.status;
+            Object.keys(status).forEach(key => {
+                const input = document.getElementById(key);
+                if (input) {
+                    input.value = status[key];
+                }
+                const select = document.getElementById(`${key}-select`);
+                if (select) {
+                    for (const option of select.options) {
+                        if (parseInt(option.value, 10) === status[key]) {
+                            option.selected = true;
+                            break;
+                        }
+                    }
+                }
+            });
+            document.getElementById('queryResult').textContent = '状态已加载';
+            // 更新条形图数据
+            updateStatusCharts();
+        } else {
+            document.getElementById('queryResult').textContent = '未找到状态';
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// 提交状态更新
+function saveStatus() {
+    const ALLOWED_KEYS = [
+        'health',
+        'energy',
+        'fatigue',
+        'mental'
+    ];
+
+    // 收集所有输入框
+    const rawStatus = {};
+    document.querySelectorAll('#status-list input').forEach(input => {
+        rawStatus[input.id] = parseInt(input.value) || 0;
+    });
+
+    // 过滤只保留我们关心的 4 个状态
+    const status = {};
+    ALLOWED_KEYS.forEach(key => {
+        if (key in rawStatus) {
+            status[key] = rawStatus[key];
+        }
+    });
+
+    // 发送给后端
+    fetch(`${SERVER_URL}/update_user_status/${CURRENT_USERNAME}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(status)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('状态已成功保存！');
+            window.hasUnsavedChanges = false;
+        } else {
+            throw new Error('保存失败！');
+        }
+    })
+    .catch(error => console.error(error.message));
 }
