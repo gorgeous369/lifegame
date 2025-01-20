@@ -91,3 +91,13 @@ li {
     cursor: pointer;
     transition: background-color 0.3s;
 }
+
+.radar-panel {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#radarChart {
+    max-width: 100%;
+    margin: 0 auto;
+}
