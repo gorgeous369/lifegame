@@ -222,28 +222,39 @@ function fetchSkills() {
         // 这里才可安全调用 forEach
         const skillArr = data.skill_list;
     
-        // 清空当前列表
-        const ul = document.getElementById('skills-list');
-        ul.innerHTML = '';
+        const tableBody = document.querySelector('#skills-table tbody'); // 选择 tbody
+        tableBody.innerHTML = '';
     
-        // 遍历技能数组
         skillArr.forEach(skill => {
-            // 创建 <li>
-            const li = document.createElement('li');
-            // 显示格式可以自由调整，这里示例为 “写作 (4)”
-            li.textContent = `${skill.skillname} (${skill.proficiency}) `;
-    
-            // 删除按钮
+            // 创建 <tr>
+            const tr = document.createElement('tr');
+        
+            // 创建技能名称列
+            const tdSkillName = document.createElement('td');
+            tdSkillName.textContent = `${skill.skillname}`;
+        
+            // 创建熟练度列
+            const tdProficiency = document.createElement('td');
+            tdProficiency.textContent = `${skill.proficiency}`;
+        
+            // 创建操作列
+            const tdActions = document.createElement('td');
             const btnDelete = document.createElement('button');
             btnDelete.textContent = '删除';
-            btnDelete.onclick = function() {
-                deleteSkill(skill.skillname, li);
+            btnDelete.onclick = function () {
+                deleteSkill(skill.skillname, tr);
             };
-            li.appendChild(btnDelete);
-    
-            // 将 li 加到 ul
-            ul.appendChild(li);
-        });
+            tdActions.appendChild(btnDelete);
+        
+            // 将列添加到行
+            tr.appendChild(tdSkillName);
+            tr.appendChild(tdProficiency);
+            tr.appendChild(tdActions);
+        
+            // 将行添加到表格
+            tableBody.appendChild(tr);
+        }
+        );
     })
     .catch(error => {
         console.error('加载技能出错：', error);
@@ -445,27 +456,40 @@ function fetchBonus() {
             throw new Error('后端返回格式不符合预期，bonus_list 不存在或不是数组');
         }
         
-        // 清空当前列表
-        const ul = document.getElementById('bonus-list');
-        ul.innerHTML = '';
-    
+        // 清空当前表格
+        const table = document.getElementById('bonus-table');
+        const tbody = table.querySelector('tbody');
+        tbody.innerHTML = '';
+
         // 遍历 bonus 数组
         data.bonus_list.forEach(b => {
-            // 创建 <li>
-            const li = document.createElement('li');
-            // 显示格式示例: “奖励名称(积分)”
-            li.textContent = `${b.bonusname} (${b.bonuspoint})`;
+            // 创建 <tr>
+            const tr = document.createElement('tr');
 
-            // 删除按钮
+            // 奖励名称列
+            const tdName = document.createElement('td');
+            tdName.textContent = b.bonusname;
+
+            // 奖励积分列
+            const tdPoint = document.createElement('td');
+            tdPoint.textContent = b.bonuspoint;
+
+            // 操作列（删除按钮）
+            const tdActions = document.createElement('td');
             const btnDelete = document.createElement('button');
             btnDelete.textContent = '删除';
-            btnDelete.onclick = function() {
-                deleteBonus(b.bonusid, li);
+            btnDelete.onclick = function () {
+                deleteBonus(b.bonusid, tr);
             };
-            li.appendChild(btnDelete);
-    
-            // 将 li 加到 ul
-            ul.appendChild(li);
+            tdActions.appendChild(btnDelete);
+
+            // 将列添加到行
+            tr.appendChild(tdName);
+            tr.appendChild(tdPoint);
+            tr.appendChild(tdActions);
+
+            // 将行添加到表格
+            tbody.appendChild(tr);
         });
     })
     .catch(error => {

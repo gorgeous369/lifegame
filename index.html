@@ -9,10 +9,9 @@
     <link rel="stylesheet" href="styles.css"><!-- 如需，可引用你的 CSS -->
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="width: 80%;">
         <h1 class="title">游戏人生系统 (LifeGame-Master)</h1>
         <div id="datetime" style="font-size: 2rem;text-align: center;"></div>
-
         <!-- ===================== 角色属性面板 ===================== -->
         <div class="panel attributes-panel">
             <h2>角色属性</h2>
@@ -21,150 +20,255 @@
                 <h2>角色属性图</h2>
                 <canvas id="radarChart" width="400" height="400"></canvas>
             </div>
-            <ul id="attributes-list">
-                <li>
-                    体力（Strength）
-                    <button class="info-btn" onclick="showTooltip('在现实生活中，这可以指体能、肌肉力量和耐力。')">i</button>
-                    <button class="control-btn" onclick="decrement('strength')">-</button>
-                    <input type="text" id="strength" class="value" value="0" oninput="updateAttribute('strength', 0)">
-                    <button class="control-btn" onclick="increment('strength')">+</button>
-                </li>
-                <li>
-                    敏捷（Agility/Dexterity）
-                    <button class="info-btn" onclick="showTooltip('这可以指身体的灵活性、协调性和反应速度。')">i</button>
-                    <button class="control-btn" onclick="decrement('agility')">-</button>
-                    <input type="text" id="agility" class="value" value="0" oninput="updateAttribute('agility', 0)">
-                    <button class="control-btn" onclick="increment('agility')">+</button>
-                </li>
-                <li>
-                    体质（Constitution/Endurance）
-                    <button class="info-btn" onclick="showTooltip('指身体的健康状况和抵抗疾病的能力。')">i</button>
-                    <button class="control-btn" onclick="decrement('endurance')">-</button>
-                    <input type="text" id="endurance" class="value" value="0" oninput="updateAttribute('endurance', 0)">
-                    <button class="control-btn" onclick="increment('endurance')">+</button>
-                </li>
-                <li>
-                    智力（Intelligence）
-                    <button class="info-btn" onclick="showTooltip('指学习能力、解决问题的能力和逻辑思维能力。')">i</button>
-                    <button class="control-btn" onclick="decrement('intelligence')">-</button>
-                    <input type="text" id="intelligence" class="value" value="0" oninput="updateAttribute('intelligence', 0)">
-                    <button class="control-btn" onclick="increment('intelligence')">+</button>
-                </li>
-                <li>
-                    精神（Wisdom/Willpower）
-                    <button class="info-btn" onclick="showTooltip('指心理韧性、决心和情绪管理能力。')">i</button>
-                    <button class="control-btn" onclick="decrement('wisdom')">-</button>
-                    <input type="text" id="wisdom" class="value" value="0" oninput="updateAttribute('wisdom', 0)">
-                    <button class="control-btn" onclick="increment('wisdom')">+</button>
-                </li>
-                <li>
-                    魅力（Charisma）
-                    <button class="info-btn" onclick="showTooltip('指与他人互动的能力、社交技能和领导力。')">i</button>
-                    <button class="control-btn" onclick="decrement('charisma')">-</button>
-                    <input type="text" id="charisma" class="value" value="0" oninput="updateAttribute('charisma', 0)">
-                    <button class="control-btn" onclick="increment('charisma')">+</button>
-                </li>
-                <li>
-                    幸运（Luck）
-                    <button class="info-btn" onclick="showTooltip('指获得机会的能力。')">i</button>
-                    <button class="control-btn" onclick="decrement('luck')">-</button>
-                    <input type="text" id="luck" class="value" value="0" oninput="updateAttribute('luck', 0)">
-                    <button class="control-btn" onclick="increment('luck')">+</button>
-                </li>
-                <li>
-                    创造力（Creativity）
-                    <button class="info-btn" onclick="showTooltip('指创新思维和解决问题的能力。')">i</button>
-                    <button class="control-btn" onclick="decrement('creativity')">-</button>
-                    <input type="text" id="creativity" class="value" value="0" oninput="updateAttribute('creativity', 0)">
-                    <button class="control-btn" onclick="increment('creativity')">+</button>
-                </li>
-            </ul>
+            <table id="attributes-table" style="width: 50%; border-collapse: collapse;">
+                <!-- <thead>
+                    <tr>
+                        <th>属性</th>
+                        <th>描述</th>
+                        <th>操作</th>
+                        <th>值</th>
+                        <th>调整</th>
+                    </tr>
+                </thead> -->
+                <tbody>
+                    <tr>
+                        <td>体力</td>
+                        <td>
+                            <button class="info-btn" onclick="showTooltip('在现实生活中，这可以指体能、肌肉力量和耐力。')">i</button>
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="decrement('strength')">-</button>
+                        </td>
+                        <td>
+                            <input type="text" id="strength" class="value" value="0" oninput="updateAttribute('strength', 0)">
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="increment('strength')">+</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>敏捷</td>
+                        <td>
+                            <button class="info-btn" onclick="showTooltip('这可以指身体的灵活性、协调性和反应速度。')">i</button>
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="decrement('agility')">-</button>
+                        </td>
+                        <td>
+                            <input type="text" id="agility" class="value" value="0" oninput="updateAttribute('agility', 0)">
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="increment('agility')">+</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>体质</td>
+                        <td>
+                            <button class="info-btn" onclick="showTooltip('指身体的健康状况和抵抗疾病的能力。')">i</button>
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="decrement('endurance')">-</button>
+                        </td>
+                        <td>
+                            <input type="text" id="endurance" class="value" value="0" oninput="updateAttribute('endurance', 0)">
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="increment('endurance')">+</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>智力</td>
+                        <td>
+                            <button class="info-btn" onclick="showTooltip('指学习能力、解决问题的能力和逻辑思维能力。')">i</button>
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="decrement('intelligence')">-</button>
+                        </td>
+                        <td>
+                            <input type="text" id="intelligence" class="value" value="0" oninput="updateAttribute('intelligence', 0)">
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="increment('intelligence')">+</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>精神</td>
+                        <td>
+                            <button class="info-btn" onclick="showTooltip('指心理韧性、决心和情绪管理能力。')">i</button>
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="decrement('wisdom')">-</button>
+                        </td>
+                        <td>
+                            <input type="text" id="wisdom" class="value" value="0" oninput="updateAttribute('wisdom', 0)">
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="increment('wisdom')">+</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>魅力</td>
+                        <td>
+                            <button class="info-btn" onclick="showTooltip('指与他人互动的能力、社交技能和领导力。')">i</button>
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="decrement('charisma')">-</button>
+                        </td>
+                        <td>
+                            <input type="text" id="charisma" class="value" value="0" oninput="updateAttribute('charisma', 0)">
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="increment('charisma')">+</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>幸运</td>
+                        <td>
+                            <button class="info-btn" onclick="showTooltip('指获得机会的能力。')">i</button>
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="decrement('luck')">-</button>
+                        </td>
+                        <td>
+                            <input type="text" id="luck" class="value" value="0" oninput="updateAttribute('luck', 0)">
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="increment('luck')">+</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>创造力</td>
+                        <td>
+                            <button class="info-btn" onclick="showTooltip('指创新思维和解决问题的能力。')">i</button>
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="decrement('creativity')">-</button>
+                        </td>
+                        <td>
+                            <input type="text" id="creativity" class="value" value="0" oninput="updateAttribute('creativity', 0)">
+                        </td>
+                        <td>
+                            <button class="control-btn" onclick="increment('creativity')">+</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <button id="saveBtn" onclick="saveAttributes()" style="margin-top: 1rem;">
                 保存
             </button>
         </div>
-
         <!-- ===================== 角色技能面板 ===================== -->
         <div class="panel skills-panel">
             <h1>技能列表</h1>
             <div id="loading-indicator" style="display: none;">加载中...</div>
-            <ul id="skills-list">
-                <!-- 页面加载后会由脚本自动填充 -->
-            </ul>
+            <table id="skills-table" style="width: 50%; border-collapse: collapse;">
+                <tbody>
+                    <!-- 页面加载后，脚本会动态填充技能数据 -->
+                </tbody>
+            </table>
             <!-- 底部的“添加”按钮 -->
             <button id="btnAddSkill">添加</button>
         
             <!-- 引入外部脚本 -->
             <script src="script.js"></script>
         </div>
-
-<!-- ===================== 角色状态面板（示例） ===================== -->
-<div class="panel status-panel">
-    <h2>角色状态</h2>
-    <ul id="status-list"></ul>
-    <ul>
-        <li>
-            健康状态（Health）:
-            <button class="control-btn" onclick="decrementStatus('health')">-</button>
-            <input type="text" id="health" class="value" value="0" oninput="updateStatus('health', 0)">
-            <button class="control-btn" onclick="incrementStatus('health')">+</button>
-            <select id="health-select">
-                <option value="-10">非常差,-10行动点</option>
-                <option value="-5">差，-5行动点</option>
-                <option value="0">一般，不增加行动点</option>
-                <option value="10">良好，额外+10行动点</option>
-                <option value="20">非常好，额外+20行动点</option>
-            </select>
-            <canvas id="healthChart" class="barChart"></canvas>
-        </li>
-        <li>
-            能量状态（Energy）:
-            <button class="control-btn" onclick="decrementStatus('energy')">-</button>
-            <input type="text" id="energy" class="value" value="0" oninput="updateStatus('energy', 0)">
-            <button class="control-btn" onclick="incrementStatus('energy')">+</button>
-            <select id="energy-select">
-                <option value="-10">非常低,-10行动点</option>
-                <option value="-5">低，-5行动点</option>
-                <option value="0">中等，不增加行动点</option>
-                <option value="10">高，额外+10行动点</option>
-                <option value="15">非常高，额外+15行动点</option>
-            </select>
-            <canvas id="energyChart" class="barChart"></canvas>
-        </li>
-        <li>
-            疲劳状态（Fatigue）:
-            <button class="control-btn" onclick="decrementStatus('fatigue')">-</button>
-            <input type="text" id="fatigue" class="value" value="0" oninput="updateStatus('fatigue', 0)">
-            <button class="control-btn" onclick="incrementStatus('fatigue')">+</button>
-            <select id="fatigue-select">
-                <option value="-15">非常低,-15行动点</option>
-                <option value="-10">低，-10行动点</option>
-                <option value="0">中等，不增加行动点</option>
-                <option value="5">高，额外+5行动点</option>
-                <option value="10">非常高，额外+10行动点</option>
-            </select>
-            <canvas id="fatigueChart" class="barChart"></canvas>
-        </li>
-        <li>
-            心理状态（Mental）:
-            <button class="control-btn" onclick="decrementStatus('mental')">-</button>
-            <input type="text" id="mental" class="value" value="0" oninput="updateStatus('mental', 0)">
-            <button class="control-btn" onclick="incrementStatus('mental')">+</button>
-            <select id="mental-select">
-                <option value="-10">痛苦,-10行动点</option>
-                <option value="-5">不稳定，-5行动点</option>
-                <option value="0">稳定，不增加行动点</option>
-                <option value="10">积极，额外+10行动点</option>
-                <option value="15">优秀，额外+15行动点</option>
-            </select>
-            <canvas id="mentalChart" class="barChart"></canvas>
-        </li>
-    </ul>
-    <button id="saveStatusBtn" onclick="saveStatus()" style="margin-top: 1rem;">
-        保存
-    </button>
-</div>
-
+        <!-- ===================== 角色状态面板（示例） ===================== -->
+        <div class="panel status-panel">
+            <h2>角色状态</h2>
+            <table id="status-table" style="width: 100%; border-collapse: collapse;">
+                <tbody>
+                    <tr>
+                        <td>健康状态</td>
+                        <td>
+                            <button class="control-btn" onclick="decrementStatus('health')">-</button>
+                            <button class="control-btn" onclick="incrementStatus('health')">+</button>
+                        </td>
+                        <td>
+                            <input type="text" id="health" class="value" value="0" oninput="updateStatus('health', 0)">
+                        </td>
+                        <td>
+                            <select id="health-select">
+                                <option value="-10">非常差,-10行动点</option>
+                                <option value="-5">差，-5行动点</option>
+                                <option value="0">一般，不增加行动点</option>
+                                <option value="10">良好，额外+10行动点</option>
+                                <option value="20">非常好，额外+20行动点</option>
+                            </select>
+                        </td>
+                        <td>
+                            <canvas id="healthChart" class="barChart"></canvas>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>能量状态</td>
+                        <td>
+                            <button class="control-btn" onclick="decrementStatus('energy')">-</button>
+                            <button class="control-btn" onclick="incrementStatus('energy')">+</button>
+                        </td>
+                        <td>
+                            <input type="text" id="energy" class="value" value="0" oninput="updateStatus('energy', 0)">
+                        </td>
+                        <td>
+                            <select id="energy-select">
+                                <option value="-10">非常低,-10行动点</option>
+                                <option value="-5">低，-5行动点</option>
+                                <option value="0">中等，不增加行动点</option>
+                                <option value="10">高，额外+10行动点</option>
+                                <option value="15">非常高，额外+15行动点</option>
+                            </select>
+                        </td>
+                        <td>
+                            <canvas id="energyChart" class="barChart"></canvas>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>疲劳状态</td>
+                        <td>
+                            <button class="control-btn" onclick="decrementStatus('fatigue')">-</button>
+                            <button class="control-btn" onclick="incrementStatus('fatigue')">+</button>
+                        </td>
+                        <td>
+                            <input type="text" id="fatigue" class="value" value="0" oninput="updateStatus('fatigue', 0)">
+                        </td>
+                        <td>
+                            <select id="fatigue-select">
+                                <option value="-15">非常低,-15行动点</option>
+                                <option value="-10">低，-10行动点</option>
+                                <option value="0">中等，不增加行动点</option>
+                                <option value="5">高，额外+5行动点</option>
+                                <option value="10">非常高，额外+10行动点</option>
+                            </select>
+                        </td>
+                        <td>
+                            <canvas id="fatigueChart" class="barChart"></canvas>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>心理状态</td>
+                        <td>
+                            <button class="control-btn" onclick="decrementStatus('mental')">-</button>
+                            <button class="control-btn" onclick="incrementStatus('mental')">+</button>
+                        </td>
+                        <td>
+                            <input type="text" id="mental" class="value" value="0" oninput="updateStatus('mental', 0)">
+                        </td>
+                        <td>
+                            <select id="mental-select">
+                                <option value="-10">痛苦,-10行动点</option>
+                                <option value="-5">不稳定，-5行动点</option>
+                                <option value="0">稳定，不增加行动点</option>
+                                <option value="10">积极，额外+10行动点</option>
+                                <option value="15">优秀，额外+15行动点</option>
+                            </select>
+                        </td>
+                        <td>
+                            <canvas id="mentalChart" class="barChart"></canvas>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="saveStatusBtn" onclick="saveStatus()" style="margin-top: 1rem;">保存</button>
+        </div>
         <!-- ===================== 目标及任务面板 ===================== -->
         <div class="panel tasks-panel">
             <h2>任务列表</h2>
@@ -173,24 +277,26 @@
             </ul>
             <button onclick="onAddTaskClicked()">添加任务</button>
         </div>
-
         <!-- 加载提示区域 -->
         <div id="queryResult" style="margin-top: 1rem; color: green;"></div>
-
         <!-- ===================== 奖励面板 ===================== -->
-        <h1>奖励</h1>
-        <!-- Bonus 列表 -->
-        <ul id="bonus-list">
-            <!-- 查询到的 bonus 会动态插入到这里 -->
-        </ul>
-        <button onclick="onAddBonusClicked()">添加 Bonus</button>
-
-    <h1>用户当前积分</h1>
-    <!-- 显示当前积分的区域 -->
-    <p id="current-point">当前积分: 加载中...</p>
-    
-    <!-- 查询按钮 -->
-    <button onclick="fetchCurrentPoint()">查询当前积分</button>
+        <div class="panel bonus-panel">
+            <h2>奖励列表</h2>
+            <table id="bonus-table" style="width: 30%; border-collapse: collapse;">
+                <tbody>
+                    <!-- JavaScript 动态填充 -->
+                </tbody>
+            </table>
+            <button onclick="onAddBonus()">添加奖励</button>
+        </div>
+        <!-- ===================== 当前积分 ===================== -->
+        <div class="panel bonus-panel">
+            <h2>用户当前积分</h2>
+            <!-- 显示当前积分的区域 -->
+            <p id="current-point">当前积分: 加载中...</p>
+            <!-- 查询按钮 -->
+            <button onclick="fetchCurrentPoint()">查询当前积分</button>
+        </div>
     </div>
     <!-- JS脚本放在 body 底部 -->
     <script src="script.js"></script>
