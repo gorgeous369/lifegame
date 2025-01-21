@@ -391,65 +391,6 @@ function saveNewSkill(button) {
 }
 
 /********************************************************
- * 角色状态面板 (如有需要可自行完善)
- ********************************************************/
-function updateStatus(id, delta) {
-    const input = document.getElementById(id);
-    if (input) {
-        let newValue = parseInt(input.value) || 0;
-        newValue += delta; 
-        newValue = Math.max(0, Math.min(100, newValue));
-        input.value = newValue;
-    }
-    window.hasUnsavedChanges = true;
-}
-
-function saveStatus() {
-    const ALLOWED_KEYS = ['health', 'energy', 'fatigue', 'mental'];
-    const rawStatus = {};
-
-    // 收集所有输入框的值
-    document.querySelectorAll('#status-table input').forEach(input => {
-        const value = parseInt(input.value);
-        rawStatus[input.id] = isNaN(value) ? 0 : value;
-    });
-
-    // 过滤有效状态
-    const status = {};
-    ALLOWED_KEYS.forEach(key => {
-        if (rawStatus[key] !== 0) { // 仅保留非默认值
-            status[key] = rawStatus[key];
-        }
-    });
-    console.log('发送的数据:', status);
-    // 如果没有更新内容，提示用户并退出
-    if (Object.keys(status).length === 0) {
-        alert('更新内容が空です。');
-        return;
-    }
-
-    // 发送数据到服务器
-    fetch(`${SERVER_URL}/update_user_status/${CURRENT_USERNAME}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(status)
-    })
-    .then(response => {
-        if (response.ok) {
-            console.log('状态已成功保存！');
-            window.hasUnsavedChanges = false;
-        } else {
-            throw new Error('保存失败！');
-        }
-    })
-    .catch(error => {
-        console.error(error.message);
-        alert('保存失败，请稍后重试！');
-    });
-}
-
-
-/********************************************************
  * 目标及任务 (示例)
  ********************************************************/
 function addTask() {
@@ -989,7 +930,7 @@ function saveStatus() {
 
     // 收集所有输入框
     const rawStatus = {};
-    document.querySelectorAll('.panel.status-panel ul li input').forEach(input => {
+    document.querySelectorAll('#status-table input').forEach(input => {
         rawStatus[input.id] = parseInt(input.value) || 0;
     });
 
