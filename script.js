@@ -437,7 +437,7 @@ function fetchBonus() {
             
                 // 添加“实现奖励”按钮
                 const btnClaim = document.createElement('button');
-                btnClaim.textContent = '实现奖励';
+                btnClaim.textContent = '兑现';
                 btnClaim.className = 'button-green';
                 btnClaim.onclick = function () {
                     claimBonus(b.bonusid, b.bonuspoint, b.bonusname, tr);
