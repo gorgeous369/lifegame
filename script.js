@@ -15,8 +15,7 @@ window.onload = function () {
     fetchBonus();
     fetchCurrentPoint();
     fetchTasks();
-    fetchStatus(); // 加载用户状态
-    // 绑定“添加技能”按钮事件
+    fetchStatus(); 
     document.getElementById('btnAddSkill').addEventListener('click', onAddSkillClicked);
 };
 
@@ -137,11 +136,9 @@ function fetchAttributes() {
                     input.value = attributes[key];
                 }
             });
-            document.getElementById('queryResult').textContent = '属性已加载';
         } else {
-            document.getElementById('queryResult').textContent = '未找到属性';
+            console.warn('未找到属性'); // 可以用控制台日志代替提示信息
         }
-        // 加载完属性后更新雷达图
         updateRadarChart();
     })
     .catch(error => console.error('Error:', error));
@@ -651,42 +648,66 @@ function fetchTasks() {
 /**
  * 添加一条 task
  */
+function openTaskModal() {
+    // 显示模态框
+    document.getElementById("task-modal").style.display = "block";
+}
+
+function closeTaskModal() {
+    // 隐藏模态框
+    document.getElementById("task-modal").style.display = "none";
+}
+
 function onAddTaskClicked() {
-    // 简单用 prompt 获取 task 名称
-    const taskName = prompt('请输入 task 名称:');
-    if (!taskName) return; // 用户取消或空输入则不继续
+    // 获取输入值
+    const taskName = document.getElementById("task-name").value.trim();
+    if (!taskName) {
+        alert("任务名称不能为空！");
+        return;
+    }
 
-    // 获取任务等级
-    const taskLevelStr = prompt('请输入 task 等级(数字):', '1');
-    const taskLevel = parseInt(taskLevelStr, 10) || 1;
+    const taskLevel = parseInt(document.getElementById("task-level").value, 10);
+    const taskPoint = parseInt(document.getElementById("task-point").value, 10) || 0;
+    const attributeStr = document.getElementById("task-attribute").value || '{"wisdom":1}';
+    const skillStr = document.getElementById("task-skill").value || '{"写作":1}';
+    const bonus = parseInt(document.getElementById("task-bonus").value, 10) || 0;
+    const startTime = document.getElementById("start-time").value;
+    const endTime = document.getElementById("end-time").value;
+    const status = parseInt(document.getElementById("task-status").value, 10);
 
-    // 获取积分
-    const pointStr = prompt('请输入 task 积分(数字):', '0');
-    const taskPoint = parseInt(pointStr, 10) || 0;
+    let attribute, skill;
+    try {
+        attribute = JSON.parse(attributeStr);
+    } catch (e) {
+        alert("任务属性格式错误！");
+        return;
+    }
 
-    // 获取属性
-    const attributeStr = prompt('请输入 task 属性(JSON):', '{"wisdom":1}');
-    const attribute = JSON.parse(attributeStr);
+    try {
+        skill = JSON.parse(skillStr);
+    } catch (e) {
+        alert("任务技能格式错误！");
+        return;
+    }
 
-    // 获取技能
-    const skillStr = prompt('请输入 task 技能(JSON):', '{"写作":1}');
-    const skill = JSON.parse(skillStr);
+    // 调用任务添加函数
+    addTask(taskName, taskLevel, taskPoint, attribute, skill, bonus, startTime, endTime, status);
 
-    // 获取奖励
-    const bonusStr = prompt('请输入 task 奖励(数字):', '0');
-    const bonus = parseInt(bonusStr, 10) || 0;
+    // 关闭模态框并清空输入
+    closeTaskModal();
+    clearTaskModalInputs();
+}
 
-    // 获取开始时间
-    const startTime = prompt('请输入 task 开始时间:', '2025-01-19 15:30:00');
-
-    // 获取结束时间
-    const endTime = prompt('请输入 task 结束时间:', '2025-01-19 16:30:00');
-
-    // 获取状态
-    const statusStr = prompt('请输入 task 状态(数字):', '0');
-    const status = parseInt(statusStr, 10) || 0;
-
-    addTask(taskName.trim(), taskLevel, taskPoint, attribute, skill, bonus, startTime, endTime, status);
+function clearTaskModalInputs() {
+    document.getElementById("task-name").value = "";
+    document.getElementById("task-level").value = "1";
+    document.getElementById("task-point").value = "0";
+    document.getElementById("task-attribute").value = '{"wisdom":1}';
+    document.getElementById("task-skill").value = '{"写作":1}';
+    document.getElementById("task-bonus").value = "0";
+    document.getElementById("start-time").value = "";
+    document.getElementById("end-time").value = "";
+    document.getElementById("task-status").value = "0";
 }
 
 /** 向后端发送添加 task 请求 */
@@ -886,11 +907,10 @@ function fetchStatus() {
                     }
                 }
             });
-            document.getElementById('queryResult').textContent = '状态已加载';
             // 更新条形图数据
             updateStatusCharts();
         } else {
-            document.getElementById('queryResult').textContent = '未找到状态';
+            console.warn('未找到状态'); // 用控制台日志提示开发者
         }
     })
     .catch(error => console.error('Error:', error));

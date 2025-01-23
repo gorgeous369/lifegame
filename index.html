@@ -268,7 +268,59 @@
             <ul id="tasks-list">
                 <!-- 页面加载后会由脚本自动填充 -->
             </ul>
-            <button onclick="onAddTaskClicked()">添加任务</button>
+            <button onclick="openTaskModal()">添加任务</button>
+        </div>
+        <!-- 模态框，用于任务输入 -->
+        <div id="task-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <h3>添加任务</h3>
+                <label>
+                    任务名称:
+                    <input type="text" id="task-name" placeholder="请输入任务名称" />
+                </label>
+                <label>
+                    任务等级:
+                    <select id="task-level">
+                        <option value="1">1 - 简单</option>
+                        <option value="2">2 - 中等</option>
+                        <option value="3">3 - 困难</option>
+                    </select>
+                </label>
+                <label>
+                    任务积分:
+                    <input type="number" id="task-point" value="0" />
+                </label>
+                <label>
+                    任务属性 (JSON):
+                    <input type="text" id="task-attribute" placeholder='例如: {"wisdom":1}' />
+                </label>
+                <label>
+                    任务技能 (JSON):
+                    <input type="text" id="task-skill" placeholder='例如: {"写作":1}' />
+                </label>
+                <label>
+                    任务奖励:
+                    <input type="number" id="task-bonus" value="0" />
+                </label>
+                <label>
+                    开始时间:
+                    <input type="datetime-local" id="start-time" />
+                </label>
+                <label>
+                    结束时间:
+                    <input type="datetime-local" id="end-time" />
+                </label>
+                <label>
+                    状态:
+                    <select id="task-status">
+                        <option value="0">未开始</option>
+                        <option value="1">进行中</option>
+                        <option value="2">已完成</option>
+                    </select>
+                </label>
+                <button onclick="onAddTaskClicked()">确认</button>
+                <button onclick="closeTaskModal()">取消</button>
+            </div>
         </div>
         <!-- ===================== 奖励面板 ===================== -->
         <div class="panel bonus-panel">
