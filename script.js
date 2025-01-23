@@ -238,6 +238,7 @@ function fetchSkills() {
             const tdActions = document.createElement('td');
             const btnDelete = document.createElement('button');
             btnDelete.textContent = '删除';
+            btnDelete.className = 'button-red';
             btnDelete.onclick = function () {
                 deleteSkill(skill.skillname, tr);
             };
@@ -437,7 +438,7 @@ function fetchBonus() {
                 // 添加“实现奖励”按钮
                 const btnClaim = document.createElement('button');
                 btnClaim.textContent = '实现奖励';
-                btnClaim.className = 'button-claim';
+                btnClaim.className = 'button-green';
                 btnClaim.onclick = function () {
                     claimBonus(b.bonusid, b.bonuspoint, b.bonusname, tr);
                 };
@@ -446,7 +447,7 @@ function fetchBonus() {
                 // 添加“删除”按钮
                 const btnDelete = document.createElement('button');
                 btnDelete.textContent = '删除';
-                btnDelete.className = 'button-delete';
+                btnDelete.className = 'button-red';
                 btnDelete.onclick = function () {
                     deleteBonus(b.bonusid, tr);
                 };
@@ -690,8 +691,8 @@ function fetchTasks() {
                 <td>${remainingTime}</td>
                 <td>${t.status === 0 ? '未完成' : '已完成'}</td>
                 <td>
-                    ${t.status === 0 ? `<button onclick='completeTask(${JSON.stringify(t)})' style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">完成</button>` : ''}
-                    <button onclick="deleteTask(${t.taskid})" style="padding: 5px 10px; background-color: #e74c3c; color: white; border: none; border-radius: 5px;">删除</button>
+                    ${t.status === 0 ? `<button onclick='completeTask(${JSON.stringify(t)})' class="button-green">完成</button>` : ''}
+                    <button onclick="deleteTask(${t.taskid})" class="button-red">删除</button>
                 </td>
             `;
             tbody.appendChild(tr);

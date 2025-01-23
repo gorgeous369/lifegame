@@ -138,24 +138,50 @@ button {
 }
 
 /* 实现奖励按钮 */
-.button-claim {
+.button-green {
     background-color: #4CAF50; /* 绿色 */
     color: white;
     margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
 }
 
-.button-claim:hover {
+.button-green:hover {
     background-color: #45a049;
     transform: scale(1.05);
 }
 
 /* 删除按钮 */
-.button-delete {
+.button-red {
     background-color: #e74c3c; /* 红色 */
     color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
 }
 
-.button-delete:hover {
+.button-red:hover {
     background-color: #d62c1a;
+    transform: scale(1.05);
+}
+
+/* 蓝色按钮 */
+.button-blue {
+    background-color: #007BFF; /* 蓝色 */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.button-blue:hover {
+    background-color: #0056b3;
     transform: scale(1.05);
 }
