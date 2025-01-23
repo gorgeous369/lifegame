@@ -13,144 +13,145 @@
         <h1 class="title">游戏人生系统 (LifeGame-Master)</h1>
         <div id="datetime" style="font-size: 2rem;text-align: center;"></div>
         <!-- ===================== 角色属性面板 ===================== -->
-        <div class="panel attributes-panel">
-            <h2>角色属性</h2>
-            <!-- 雷达图 -->
-            <div class="panel radar-panel">
-                <h2>角色属性图</h2>
-                <canvas id="radarChart" width="400" height="400"></canvas>
+        <div class="panel attributes-panel" style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <!-- 左侧: 属性表格 -->
+            <div style="flex: 1; margin-right: 20px;">
+                <h2>属性</h2>
+                <table id="attributes-table" style="width: 100%; border-collapse: collapse;">
+                    <tbody>
+                        <tr>
+                            <td>体力</td>
+                            <td>
+                                <button class="info-btn" onclick="showTooltip('在现实生活中，这可以指体能、肌肉力量和耐力。')">i</button>
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="decrement('strength')">-</button>
+                            </td>
+                            <td>
+                                <input type="text" id="strength" class="value" value="0" oninput="updateAttribute('strength', 0)">
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="increment('strength')">+</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>敏捷</td>
+                            <td>
+                                <button class="info-btn" onclick="showTooltip('这可以指身体的灵活性、协调性和反应速度。')">i</button>
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="decrement('agility')">-</button>
+                            </td>
+                            <td>
+                                <input type="text" id="agility" class="value" value="0" oninput="updateAttribute('agility', 0)">
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="increment('agility')">+</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>体质</td>
+                            <td>
+                                <button class="info-btn" onclick="showTooltip('指身体的健康状况和抵抗疾病的能力。')">i</button>
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="decrement('endurance')">-</button>
+                            </td>
+                            <td>
+                                <input type="text" id="endurance" class="value" value="0" oninput="updateAttribute('endurance', 0)">
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="increment('endurance')">+</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>智力</td>
+                            <td>
+                                <button class="info-btn" onclick="showTooltip('指学习能力、解决问题的能力和逻辑思维能力。')">i</button>
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="decrement('intelligence')">-</button>
+                            </td>
+                            <td>
+                                <input type="text" id="intelligence" class="value" value="0" oninput="updateAttribute('intelligence', 0)">
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="increment('intelligence')">+</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>精神</td>
+                            <td>
+                                <button class="info-btn" onclick="showTooltip('指心理韧性、决心和情绪管理能力。')">i</button>
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="decrement('wisdom')">-</button>
+                            </td>
+                            <td>
+                                <input type="text" id="wisdom" class="value" value="0" oninput="updateAttribute('wisdom', 0)">
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="increment('wisdom')">+</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>魅力</td>
+                            <td>
+                                <button class="info-btn" onclick="showTooltip('指与他人互动的能力、社交技能和领导力。')">i</button>
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="decrement('charisma')">-</button>
+                            </td>
+                            <td>
+                                <input type="text" id="charisma" class="value" value="0" oninput="updateAttribute('charisma', 0)">
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="increment('charisma')">+</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>幸运</td>
+                            <td>
+                                <button class="info-btn" onclick="showTooltip('指获得机会的能力。')">i</button>
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="decrement('luck')">-</button>
+                            </td>
+                            <td>
+                                <input type="text" id="luck" class="value" value="0" oninput="updateAttribute('luck', 0)">
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="increment('luck')">+</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>创造力</td>
+                            <td>
+                                <button class="info-btn" onclick="showTooltip('指创新思维和解决问题的能力。')">i</button>
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="decrement('creativity')">-</button>
+                            </td>
+                            <td>
+                                <input type="text" id="creativity" class="value" value="0" oninput="updateAttribute('creativity', 0)">
+                            </td>
+                            <td>
+                                <button class="control-btn" onclick="increment('creativity')">+</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button id="saveBtn" onclick="saveAttributes()" style="margin-top: 1rem;">保存</button>
             </div>
-            <table id="attributes-table" style="width: 50%; border-collapse: collapse;">
-                <tbody>
-                    <tr>
-                        <td>体力</td>
-                        <td>
-                            <button class="info-btn" onclick="showTooltip('在现实生活中，这可以指体能、肌肉力量和耐力。')">i</button>
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="decrement('strength')">-</button>
-                        </td>
-                        <td>
-                            <input type="text" id="strength" class="value" value="0" oninput="updateAttribute('strength', 0)">
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="increment('strength')">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>敏捷</td>
-                        <td>
-                            <button class="info-btn" onclick="showTooltip('这可以指身体的灵活性、协调性和反应速度。')">i</button>
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="decrement('agility')">-</button>
-                        </td>
-                        <td>
-                            <input type="text" id="agility" class="value" value="0" oninput="updateAttribute('agility', 0)">
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="increment('agility')">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>体质</td>
-                        <td>
-                            <button class="info-btn" onclick="showTooltip('指身体的健康状况和抵抗疾病的能力。')">i</button>
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="decrement('endurance')">-</button>
-                        </td>
-                        <td>
-                            <input type="text" id="endurance" class="value" value="0" oninput="updateAttribute('endurance', 0)">
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="increment('endurance')">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>智力</td>
-                        <td>
-                            <button class="info-btn" onclick="showTooltip('指学习能力、解决问题的能力和逻辑思维能力。')">i</button>
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="decrement('intelligence')">-</button>
-                        </td>
-                        <td>
-                            <input type="text" id="intelligence" class="value" value="0" oninput="updateAttribute('intelligence', 0)">
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="increment('intelligence')">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>精神</td>
-                        <td>
-                            <button class="info-btn" onclick="showTooltip('指心理韧性、决心和情绪管理能力。')">i</button>
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="decrement('wisdom')">-</button>
-                        </td>
-                        <td>
-                            <input type="text" id="wisdom" class="value" value="0" oninput="updateAttribute('wisdom', 0)">
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="increment('wisdom')">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>魅力</td>
-                        <td>
-                            <button class="info-btn" onclick="showTooltip('指与他人互动的能力、社交技能和领导力。')">i</button>
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="decrement('charisma')">-</button>
-                        </td>
-                        <td>
-                            <input type="text" id="charisma" class="value" value="0" oninput="updateAttribute('charisma', 0)">
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="increment('charisma')">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>幸运</td>
-                        <td>
-                            <button class="info-btn" onclick="showTooltip('指获得机会的能力。')">i</button>
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="decrement('luck')">-</button>
-                        </td>
-                        <td>
-                            <input type="text" id="luck" class="value" value="0" oninput="updateAttribute('luck', 0)">
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="increment('luck')">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>创造力</td>
-                        <td>
-                            <button class="info-btn" onclick="showTooltip('指创新思维和解决问题的能力。')">i</button>
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="decrement('creativity')">-</button>
-                        </td>
-                        <td>
-                            <input type="text" id="creativity" class="value" value="0" oninput="updateAttribute('creativity', 0)">
-                        </td>
-                        <td>
-                            <button class="control-btn" onclick="increment('creativity')">+</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <button id="saveBtn" onclick="saveAttributes()" style="margin-top: 1rem;">
-                保存
-            </button>
+        
+            <!-- 右侧: 雷达图 -->
+            <div style="flex: 1; text-align: center;">
+                <canvas id="radarChart" width="350" height="350"></canvas>
+            </div>
         </div>
         <!-- ===================== 角色技能面板 ===================== -->
         <div class="panel skills-panel">
-            <h2>技能列表</h2>
+            <h2>技能</h2>
             <div id="loading-indicator" style="display: none;">加载中...</div>
             <table id="skills-table" style="width: 50%; border-collapse: collapse;">
                 <tbody>
@@ -380,23 +381,26 @@
                 </div>
             </div>
         </div>
-        <!-- ===================== 奖励面板 ===================== -->
-        <div class="panel bonus-panel">
-            <h2>奖励列表</h2>
-            <table id="bonus-table" style="width: 30%; border-collapse: collapse;">
-                <tbody>
-                    <!-- JavaScript 动态填充 -->
-                </tbody>
-            </table>
-            <button onclick="onAddBonusClicked()">添加奖励</button>
-        </div>
-        <!-- ===================== 当前积分 ===================== -->
-        <div class="panel bonus-panel">
-            <h2>用户当前积分</h2>
-            <!-- 显示当前积分的区域 -->
-            <p id="current-point">当前积分: 加载中...</p>
-            <!-- 查询按钮 -->
-            <button onclick="fetchCurrentPoint()">查询当前积分</button>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <!-- 左侧: 当前奖励点数 -->
+            <div class="panel bonus-panel" style="flex: 1; margin-right: 20px;">
+                <h2>用户当前奖励点数</h2>
+                <!-- 显示当前积分的区域 -->
+                <p id="current-point" style="font-size: 1.2rem; font-weight: bold;">当前积分: 加载中...</p>
+                <!-- 查询按钮 -->
+                <button onclick="fetchCurrentPoint()">查询当前积分</button>
+            </div>
+        
+            <!-- 右侧: 奖励列表 -->
+            <div class="panel bonus-panel" style="flex: 2;">
+                <h2>奖励列表</h2>
+                <table id="bonus-table" style="width: 100%; border-collapse: collapse;">
+                    <tbody>
+                        <!-- JavaScript 动态填充 -->
+                    </tbody>
+                </table>
+                <button onclick="onAddBonusClicked()">添加奖励</button>
+            </div>
         </div>
     </div>
     <!-- JS脚本放在 body 底部 -->

@@ -399,60 +399,72 @@ function fetchBonus() {
     fetch(`${SERVER_URL}/get_bonus_by_user/${CURRENT_USERNAME}`, {
         method: 'GET'
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`查询 bonus 失败: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('后端返回:', data);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`查询 bonus 失败: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('后端返回:', data);
 
-        // 验证 bonus_list 是否存在且是数组
-        if (!data.bonus_list || !Array.isArray(data.bonus_list)) {
-            throw new Error('后端返回格式不符合预期，bonus_list 不存在或不是数组');
-        }
-        
-        // 清空当前表格
-        const table = document.getElementById('bonus-table');
-        const tbody = table.querySelector('tbody');
-        tbody.innerHTML = '';
+            // 验证 bonus_list 是否存在且是数组
+            if (!data.bonus_list || !Array.isArray(data.bonus_list)) {
+                throw new Error('后端返回格式不符合预期，bonus_list 不存在或不是数组');
+            }
 
-        // 遍历 bonus 数组
-        data.bonus_list.forEach(b => {
-            // 创建 <tr>
-            const tr = document.createElement('tr');
+            // 清空当前表格
+            const table = document.getElementById('bonus-table');
+            const tbody = table.querySelector('tbody');
+            tbody.innerHTML = '';
 
-            // 奖励名称列
-            const tdName = document.createElement('td');
-            tdName.textContent = b.bonusname;
-
-            // 奖励积分列
-            const tdPoint = document.createElement('td');
-            tdPoint.textContent = b.bonuspoint;
-
-            // 操作列（删除按钮）
-            const tdActions = document.createElement('td');
-            const btnDelete = document.createElement('button');
-            btnDelete.textContent = '删除';
-            btnDelete.onclick = function () {
-                deleteBonus(b.bonusid, tr);
-            };
-            tdActions.appendChild(btnDelete);
-
-            // 将列添加到行
-            tr.appendChild(tdName);
-            tr.appendChild(tdPoint);
-            tr.appendChild(tdActions);
-
-            // 将行添加到表格
-            tbody.appendChild(tr);
+            // 遍历 bonus 数组
+            data.bonus_list.forEach(b => {
+                // 创建 <tr>
+                const tr = document.createElement('tr');
+            
+                // 奖励名称列
+                const tdName = document.createElement('td');
+                tdName.textContent = b.bonusname;
+            
+                // 奖励积分列
+                const tdPoint = document.createElement('td');
+                tdPoint.textContent = b.bonuspoint;
+            
+                // 操作列
+                const tdActions = document.createElement('td');
+            
+                // 添加“实现奖励”按钮
+                const btnClaim = document.createElement('button');
+                btnClaim.textContent = '实现奖励';
+                btnClaim.className = 'button-claim';
+                btnClaim.onclick = function () {
+                    claimBonus(b.bonusid, b.bonuspoint, b.bonusname, tr);
+                };
+                tdActions.appendChild(btnClaim);
+            
+                // 添加“删除”按钮
+                const btnDelete = document.createElement('button');
+                btnDelete.textContent = '删除';
+                btnDelete.className = 'button-delete';
+                btnDelete.onclick = function () {
+                    deleteBonus(b.bonusid, tr);
+                };
+                tdActions.appendChild(btnDelete);
+            
+                // 将列添加到行
+                tr.appendChild(tdName);
+                tr.appendChild(tdPoint);
+                tr.appendChild(tdActions);
+            
+                // 将行添加到表格
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            console.error('加载 bonus 出错：', error);
+            alert('加载 bonus 出错：' + error.message);
         });
-    })
-    .catch(error => {
-        console.error('加载 bonus 出错：', error);
-        alert('加载 bonus 出错：' + error.message);
-    });
 }
 
 /**
@@ -504,32 +516,79 @@ function addBonus(bonusName, bonusPoint) {
 /**
  * 删除一条 bonus
  */
-function deleteBonus(bonusId) {
-    // 调用后端的删除接口
+function deleteBonus(bonusId, tr) {
     fetch(`${SERVER_URL}/delete_bonus`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: CURRENT_USERNAME, bonusid: bonusId }) // 包含 username 和 bonusid
+        body: JSON.stringify({ username: CURRENT_USERNAME, bonusid: bonusId })
     })
-    .then(response => {
-        if (!response.ok) {
-            if (response.status === 404) {
-                throw new Error('未找到要删除的 Bonus。');
-            } else {
-                throw new Error(`删除 bonus 失败: ${response.status}`);
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error('未找到要删除的 Bonus。');
+                } else {
+                    throw new Error(`删除 bonus 失败: ${response.status}`);
+                }
             }
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('删除 bonus 成功:', data);
-        // 成功后重新加载列表
-        fetchBonus();
-    })
-    .catch(err => {
-        console.error('删除 bonus 出错：', err.message);
-        alert('删除 bonus 出错：' + err.message);
-    });
+            return response.json();
+        })
+        .then(() => {
+            // 成功后同步移除该行
+            if (tr && tr.parentNode) {
+                tr.parentNode.removeChild(tr);
+            }
+            console.log('删除 bonus 成功');
+        })
+        .catch(err => {
+            console.error('删除 bonus 出错：', err.message);
+            alert('删除 bonus 出错：' + err.message);
+        });
+}
+
+function claimBonus(bonusId, bonusPoint, bonusName, tr) {
+    if (confirm(`奖励已实现: ${bonusName}，扣除 ${bonusPoint} 奖励点数`)) {
+        // 获取当前积分并扣除
+        fetch(`${SERVER_URL}/get_user_point/${CURRENT_USERNAME}`, {
+            method: 'GET'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`获取当前积分失败: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const currentPoint = data.currentpoint || 0;
+
+                // 检查是否有足够的奖励点数
+                if (currentPoint < bonusPoint) {
+                    alert('奖励点数不足，无法实现奖励。');
+                    return;
+                }
+
+                // 扣除奖励点数
+                const newPoint = currentPoint - bonusPoint;
+                return fetch(`${SERVER_URL}/update_user_point/${CURRENT_USERNAME}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentpoint: newPoint })
+                });
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`扣除奖励点数失败: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(() => {
+                // 删除奖励
+                deleteBonus(bonusId, tr);
+            })
+            .catch(error => {
+                console.error('实现奖励出错：', error);
+                alert('实现奖励出错：' + error.message);
+            });
+    }
 }
 
 function fetchCurrentPoint() {
@@ -547,10 +606,10 @@ function fetchCurrentPoint() {
         console.log('后端返回:', data);
 
         // 验证返回的对象是否包含 currentpoint
-        if (!data.currentpoint) {
+        if (data.currentpoint === undefined || data.currentpoint === null) {
             throw new Error('后端返回格式不符合预期或 currentpoint 不存在');
         }
-        
+
         // 更新页面上的积分显示
         const pointDisplay = document.getElementById('current-point');
         pointDisplay.textContent = `当前积分: ${data.currentpoint}`;
@@ -627,9 +686,10 @@ function fetchTasks() {
                 <td style="border: 1px solid #ccc; padding: 10px;">${t.bonus}</td>
                 <td style="border: 1px solid #ccc; padding: 10px;">${t.starttime}</td>
                 <td style="border: 1px solid #ccc; padding: 10px;">${t.endtime}</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">${t.status}</td>
+                <td style="border: 1px solid #ccc; padding: 10px;">${t.status === 0 ? '未完成' : '已完成'}</td>
                 <td style="border: 1px solid #ccc; padding: 10px;">
-                    <button onclick="deleteTask(${t.taskid})" style="padding: 5px 10px; border: none; border-radius: 5px; background-color: #e74c3c; color: white;">删除</button>
+                    ${t.status === 0 ? `<button onclick='completeTask(${JSON.stringify(t)})' style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">完成</button>` : ''}
+                    <button onclick="deleteTask(${t.taskid})" style="padding: 5px 10px; background-color: #e74c3c; color: white; border: none; border-radius: 5px;">删除</button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -1032,3 +1092,108 @@ function saveStatus() {
         alert(`保存失败: ${error.message}`);
     });
 }
+
+function completeTask(task) {
+    // 1. 更新属性点数
+    const updatedAttributes = task.attribute;
+    Object.keys(updatedAttributes).forEach(attr => {
+        incrementAttribute(attr, updatedAttributes[attr]);
+    });
+
+    // 2. 更新技能熟练度
+    const updatedSkills = task.skill;
+    Object.keys(updatedSkills).forEach(skill => {
+        incrementSkillValue(skill, updatedSkills[skill]);
+    });
+
+    // 3. 更新奖励点数
+    incrementCurrentPoint(task.bonus);
+
+    // 4. 修改任务状态为 1（完成）
+    updateTaskStatus(task.taskid, 1);
+}
+
+function updateTaskStatus(taskId, status) {
+    fetch(`${SERVER_URL}/update_task/${taskId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: status }) // 仅更新状态字段
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`更新任务状态失败: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('任务状态已更新:', data);
+            fetchTasks(); // 刷新任务列表
+        })
+        .catch(error => console.error('任务状态更新出错:', error));
+}
+
+function incrementCurrentPoint(value) {
+    // 获取当前积分
+    fetch(`${SERVER_URL}/get_user_point/${CURRENT_USERNAME}`, {
+        method: 'GET'
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`获取当前积分失败: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const currentPoint = data.currentpoint || 0;
+            const newPoint = currentPoint + value;
+
+            // 调用更新积分接口
+            return fetch(`${SERVER_URL}/update_user_point/${CURRENT_USERNAME}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ currentpoint: newPoint })
+            });
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`更新积分失败: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('积分已更新:', data);
+            fetchCurrentPoint(); // 刷新当前积分显示
+        })
+        .catch(error => {
+            console.error('积分更新出错:', error);
+        });
+}
+
+function incrementAttribute(attribute, value) {
+    const input = document.getElementById(attribute);
+    if (input) {
+        const currentValue = parseInt(input.value, 10) || 0;
+        const newValue = Math.min(100, currentValue + value); // 确保属性点数不超过 100
+        input.value = newValue;
+    }
+    saveAttributes(); // 保存属性到后端
+}
+
+function incrementSkillValue(skillName, value) {
+    fetch(`${SERVER_URL}/get_skill_by_name/${CURRENT_USERNAME}/${skillName}`, {
+        method: 'GET'
+    })
+        .then(response => response.json())
+        .then(skill => {
+            if (skill) {
+                const newProficiency = skill.proficiency + value;
+                // 更新技能熟练度到后端
+                addSkillToServer(skillName, newProficiency);
+            } else {
+                // 如果技能不存在，直接添加
+                addSkillToServer(skillName, value);
+            }
+        })
+        .catch(error => console.error('技能更新出错:', error));
+}
+
