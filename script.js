@@ -648,18 +648,24 @@ function fetchTasks() {
 /**
  * 添加一条 task
  */
-function openTaskModal() {
-    // 显示模态框
-    document.getElementById("task-modal").style.display = "block";
-}
 
 function closeTaskModal() {
     // 隐藏模态框
     document.getElementById("task-modal").style.display = "none";
 }
 
+function openTaskModal() {
+    // 显示模态框
+    document.getElementById("task-modal").style.display = "block";
+
+    // 设置默认开始时间为当天的 0 点
+    const now = new Date();
+    const zeroTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+    const formattedDateTime = zeroTime.toISOString().slice(0, 16); // 格式化为 yyyy-MM-ddTHH:mm
+    document.getElementById("start-time").value = formattedDateTime;
+}
+
 function onAddTaskClicked() {
-    // 获取输入值
     const taskName = document.getElementById("task-name").value.trim();
     if (!taskName) {
         alert("任务名称不能为空！");
@@ -668,34 +674,96 @@ function onAddTaskClicked() {
 
     const taskLevel = parseInt(document.getElementById("task-level").value, 10);
     const taskPoint = parseInt(document.getElementById("task-point").value, 10) || 0;
-    const attributeStr = document.getElementById("task-attribute").value || '{"wisdom":1}';
-    const skillStr = document.getElementById("task-skill").value || '{"写作":1}';
+    const attributes = collectAttributes(); // 获取任务属性数据
+    const skills = collectSkills(); // 获取任务技能数据
     const bonus = parseInt(document.getElementById("task-bonus").value, 10) || 0;
     const startTime = document.getElementById("start-time").value;
     const endTime = document.getElementById("end-time").value;
-    const status = parseInt(document.getElementById("task-status").value, 10);
-
-    let attribute, skill;
-    try {
-        attribute = JSON.parse(attributeStr);
-    } catch (e) {
-        alert("任务属性格式错误！");
-        return;
-    }
-
-    try {
-        skill = JSON.parse(skillStr);
-    } catch (e) {
-        alert("任务技能格式错误！");
-        return;
-    }
+    const status = 0; // 默认状态为 0
 
     // 调用任务添加函数
-    addTask(taskName, taskLevel, taskPoint, attribute, skill, bonus, startTime, endTime, status);
+    addTask(taskName, taskLevel, taskPoint, attributes, skills, bonus, startTime, endTime, status);
 
     // 关闭模态框并清空输入
     closeTaskModal();
     clearTaskModalInputs();
+}
+
+const ATTRIBUTE_OPTIONS = [
+    "体力",
+    "敏捷",
+    "体质",
+    "智力",
+    "精神",
+    "魅力",
+    "幸运",
+    "创造力",
+];
+
+function addAttributeRow() {
+    const table = document.getElementById("attribute-table").querySelector("tbody");
+    const row = document.createElement("tr");
+
+    // 动态生成属性选项
+    const selectOptions = ATTRIBUTE_OPTIONS.map(
+        attr => `<option value="${attr}">${attr}</option>`
+    ).join("");
+
+    row.innerHTML = `
+        <td>
+            <select class="attribute-name">
+                ${selectOptions}
+            </select>
+        </td>
+        <td><input type="number" class="attribute-value" value="0" /></td>
+        <td><button type="button" onclick="deleteRow(this)">删除</button></td>
+    `;
+
+    table.appendChild(row);
+}
+
+function addSkillRow() {
+    const table = document.getElementById("skill-table").querySelector("tbody");
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td><input type="text" class="skill-name" placeholder="技能名称" /></td>
+        <td><input type="number" class="skill-value" value="0" /></td>
+        <td><button type="button" onclick="deleteRow(this)">删除</button></td>
+    `;
+
+    table.appendChild(row);
+}
+
+function deleteRow(button) {
+    const row = button.parentElement.parentElement;
+    row.remove();
+}
+
+function collectAttributes() {
+    const attributes = {};
+    const rows = document.querySelectorAll("#attribute-table tbody tr");
+    rows.forEach(row => {
+        const name = row.querySelector(".attribute-name").value.trim();
+        const value = parseInt(row.querySelector(".attribute-value").value, 10);
+        if (name) {
+            attributes[name] = value || 0;
+        }
+    });
+    return attributes;
+}
+
+function collectSkills() {
+    const skills = {};
+    const rows = document.querySelectorAll("#skill-table tbody tr");
+    rows.forEach(row => {
+        const name = row.querySelector(".skill-name").value.trim();
+        const value = parseInt(row.querySelector(".skill-value").value, 10);
+        if (name) {
+            skills[name] = value || 0;
+        }
+    });
+    return skills;
 }
 
 function clearTaskModalInputs() {

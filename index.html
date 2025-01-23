@@ -274,52 +274,110 @@
         <div id="task-modal" class="modal" style="display:none;">
             <div class="modal-content">
                 <h3>添加任务</h3>
-                <label>
-                    任务名称:
-                    <input type="text" id="task-name" placeholder="请输入任务名称" />
-                </label>
-                <label>
-                    任务等级:
-                    <select id="task-level">
-                        <option value="1">1 - 简单</option>
-                        <option value="2">2 - 中等</option>
-                        <option value="3">3 - 困难</option>
-                    </select>
-                </label>
-                <label>
-                    任务积分:
-                    <input type="number" id="task-point" value="0" />
-                </label>
-                <label>
-                    任务属性 (JSON):
-                    <input type="text" id="task-attribute" placeholder='例如: {"wisdom":1}' />
-                </label>
-                <label>
-                    任务技能 (JSON):
-                    <input type="text" id="task-skill" placeholder='例如: {"写作":1}' />
-                </label>
-                <label>
-                    任务奖励:
-                    <input type="number" id="task-bonus" value="0" />
-                </label>
-                <label>
-                    开始时间:
-                    <input type="datetime-local" id="start-time" />
-                </label>
-                <label>
-                    结束时间:
-                    <input type="datetime-local" id="end-time" />
-                </label>
-                <label>
-                    状态:
-                    <select id="task-status">
-                        <option value="0">未开始</option>
-                        <option value="1">进行中</option>
-                        <option value="2">已完成</option>
-                    </select>
-                </label>
-                <button onclick="onAddTaskClicked()">确认</button>
-                <button onclick="closeTaskModal()">取消</button>
+                <!-- 第一行: 任务名称、任务等级、行动点 -->
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <label style="flex: 1; margin-right: 10px;">
+                        任务名称:
+                        <input type="text" id="task-name" placeholder="请输入任务名称" style="width: 100%;" />
+                    </label>
+                    <label style="flex: 1; margin-right: 10px;">
+                        任务等级:
+                        <select id="task-level" style="width: 100%;">
+                            <option value="1">1 - 简单</option>
+                            <option value="2">2 - 中等</option>
+                            <option value="3">3 - 困难</option>
+                            <option value="4">4 - 非常困难</option>
+                            <option value="5">5 - 史诗级</option>
+                        </select>
+                    </label>
+                    <label style="flex: 1;">
+                        行动点:
+                        <input type="number" id="task-point" value="0" style="width: 100%;" />
+                    </label>
+                </div>
+        
+                <!-- 第二行: 属性提升 -->
+                <div style="margin-bottom: 10px;">
+                    <label style="display: flex; align-items: center;">
+                        属性提升:
+                    </label>
+                    <table id="attribute-table" style="width: 100%; border-collapse: collapse; margin-top: 5px;">
+                        <thead>
+                            <tr>
+                                <th>属性名称</th>
+                                <th>属性值</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 默认一行 -->
+                            <tr>
+                                <td>
+                                    <select class="attribute-name" style="width: 100%;">
+                                        <option value="体力">体力</option>
+                                        <option value="敏捷">敏捷</option>
+                                        <option value="体质">体质</option>
+                                        <option value="智力">智力</option>
+                                        <option value="精神">精神</option>
+                                        <option value="魅力">魅力</option>
+                                        <option value="幸运">幸运</option>
+                                        <option value="创造力">创造力</option>
+                                    </select>
+                                </td>
+                                <td><input type="number" class="attribute-value" value="0" style="width: 100%;" /></td>
+                                <td><button type="button" onclick="deleteRow(this)">删除</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" onclick="addAttributeRow()" style="margin-left: 10px;">添加属性</button>
+                </div>
+        
+                <!-- 第三行: 技能提升 -->
+                <div style="margin-bottom: 10px;">
+                    <label style="display: flex; align-items: center;">
+                        技能提升:
+                    </label>
+                    <table id="skill-table" style="width: 100%; border-collapse: collapse; margin-top: 5px;">
+                        <thead>
+                            <tr>
+                                <th>技能名称</th>
+                                <th>技能熟练度</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 默认一行 -->
+                            <tr>
+                                <td><input type="text" class="skill-name" placeholder="技能名称" style="width: 100%;" /></td>
+                                <td><input type="number" class="skill-value" value="0" style="width: 100%;" /></td>
+                                <td><button type="button" onclick="deleteRow(this)">删除</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" onclick="addSkillRow()" style="margin-left: 10px;">添加技能</button>
+                </div>
+        
+                <!-- 第四行: 任务奖励、开始时间、结束时间 -->
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <label style="flex: 1; margin-right: 10px;">
+                        任务奖励:
+                        <input type="number" id="task-bonus" value="0" style="width: 100%;" />
+                    </label>
+                    <label style="flex: 1; margin-right: 10px;">
+                        开始时间:
+                        <input type="datetime-local" id="start-time" style="width: 100%;" />
+                    </label>
+                    <label style="flex: 1;">
+                        结束时间:
+                        <input type="datetime-local" id="end-time" style="width: 100%;" />
+                    </label>
+                </div>
+        
+                <!-- 最后一行: 确认和取消按钮 -->
+                <div style="text-align: center; margin-top: 10px;">
+                    <button onclick="onAddTaskClicked()" style="margin-right: 10px;">确认</button>
+                    <button onclick="closeTaskModal()">取消</button>
+                </div>
             </div>
         </div>
         <!-- ===================== 奖励面板 ===================== -->
