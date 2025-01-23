@@ -150,7 +150,7 @@
         </div>
         <!-- ===================== 角色技能面板 ===================== -->
         <div class="panel skills-panel">
-            <h1>技能列表</h1>
+            <h2>技能列表</h2>
             <div id="loading-indicator" style="display: none;">加载中...</div>
             <table id="skills-table" style="width: 50%; border-collapse: collapse;">
                 <tbody>
@@ -169,7 +169,6 @@
             <table id="status-table" style="width: 100%; border-collapse: collapse;">
                 <tbody>
                     <tr>
-                        <td>健康状态</td>
                         <td>
                             <button class="control-btn" onclick="decrementStatus('health')">-</button>
                             <button class="control-btn" onclick="incrementStatus('health')">+</button>
@@ -270,8 +269,6 @@
             </ul>
             <button onclick="onAddTaskClicked()">添加任务</button>
         </div>
-        <!-- 加载提示区域 -->
-        <div id="queryResult" style="margin-top: 1rem; color: green;"></div>
         <!-- ===================== 奖励面板 ===================== -->
         <div class="panel bonus-panel">
             <h2>奖励列表</h2>

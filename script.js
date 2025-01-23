@@ -390,27 +390,6 @@ function saveNewSkill(button) {
     addSkillToServer(skillName, proficiency);
 }
 
-/********************************************************
- * 目标及任务 (示例)
- ********************************************************/
-function addTask() {
-    const goalsList = document.getElementById("goals-list");
-    const newTask = document.createElement("li");
-    newTask.innerHTML = `
-        <input type="text" placeholder="任务名称" class="task-name">
-        开始日期: <input type="date" class="task-date">
-        结束日期: <input type="date" class="task-date">
-        <button class="delete-btn" onclick="deleteTask(this)">删除</button>
-    `;
-    goalsList.appendChild(newTask);
-}
-
-function deleteTask(button) {
-    if (button && button.parentElement) {
-        button.parentElement.remove();
-    }
-}
-
 /**********************************************
  * bonus 增删查
  **********************************************/
@@ -556,8 +535,6 @@ function deleteBonus(bonusId) {
     });
 }
 
-
-
 function fetchCurrentPoint() {
     // 假设后端接口是 /get_user_point/<username>
     fetch(`${SERVER_URL}/get_user_point/${CURRENT_USERNAME}`, {
@@ -628,7 +605,7 @@ function fetchTasks() {
             <tr>
                 <th style="border: 1px solid #ccc; padding: 10px;">任务名称</th>
                 <th style="border: 1px solid #ccc; padding: 10px;">任务等级</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">积分</th>
+                <th style="border: 1px solid #ccc; padding: 10px;">行动点</th>
                 <th style="border: 1px solid #ccc; padding: 10px;">属性</th>
                 <th style="border: 1px solid #ccc; padding: 10px;">技能</th>
                 <th style="border: 1px solid #ccc; padding: 10px;">奖励</th>
