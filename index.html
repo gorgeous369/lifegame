@@ -149,120 +149,117 @@
                 <canvas id="radarChart" width="350" height="350"></canvas>
             </div>
         </div>
-        <!-- ===================== 角色技能面板 ===================== -->
-        <div class="panel skills-panel">
-            <h2>技能</h2>
-            <div id="loading-indicator" style="display: none;">加载中...</div>
-            <table id="skills-table" style="width: 50%; border-collapse: collapse;">
-                <tbody>
-                    <!-- 页面加载后，脚本会动态填充技能数据 -->
-                </tbody>
-            </table>
-            <!-- 底部的“添加”按钮 -->
-            <button id="btnAddSkill">添加</button>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+            <!-- 左侧: 状态面板 -->
+            <div class="panel status-panel" style="flex: 2;">
+                <h2>状态</h2>
+                <table id="status-table" style="width: 100%; border-collapse: collapse;">
+                    <tbody>
+                        <tr>
+                            <td>健康状态</td>
+                            <td>
+                                <button class="control-btn" onclick="decrementStatus('health')">-</button>
+                                <button class="control-btn" onclick="incrementStatus('health')">+</button>
+                            </td>
+                            <td>
+                                <input type="text" id="health" class="value" value="0" oninput="updateStatus('health', 0)">
+                            </td>
+                            <td>
+                                <select id="health-select">
+                                    <option value="-10">非常差,-10行动点</option>
+                                    <option value="-5">差，-5行动点</option>
+                                    <option value="0">一般，不增加行动点</option>
+                                    <option value="10">良好，额外+10行动点</option>
+                                    <option value="20">非常好，额外+20行动点</option>
+                                </select>
+                            </td>
+                            <td>
+                                <canvas id="healthChart" class="barChart"></canvas>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>能量状态</td>
+                            <td>
+                                <button class="control-btn" onclick="decrementStatus('energy')">-</button>
+                                <button class="control-btn" onclick="incrementStatus('energy')">+</button>
+                            </td>
+                            <td>
+                                <input type="text" id="energy" class="value" value="0" oninput="updateStatus('energy', 0)">
+                            </td>
+                            <td>
+                                <select id="energy-select">
+                                    <option value="-10">非常低,-10行动点</option>
+                                    <option value="-5">低，-5行动点</option>
+                                    <option value="0">中等，不增加行动点</option>
+                                    <option value="10">高，额外+10行动点</option>
+                                    <option value="15">非常高，额外+15行动点</option>
+                                </select>
+                            </td>
+                            <td>
+                                <canvas id="energyChart" class="barChart"></canvas>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>疲劳状态</td>
+                            <td>
+                                <button class="control-btn" onclick="decrementStatus('fatigue')">-</button>
+                                <button class="control-btn" onclick="incrementStatus('fatigue')">+</button>
+                            </td>
+                            <td>
+                                <input type="text" id="fatigue" class="value" value="0" oninput="updateStatus('fatigue', 0)">
+                            </td>
+                            <td>
+                                <select id="fatigue-select">
+                                    <option value="-15">非常低,-15行动点</option>
+                                    <option value="-10">低，-10行动点</option>
+                                    <option value="0">中等，不增加行动点</option>
+                                    <option value="5">高，额外+5行动点</option>
+                                    <option value="10">非常高，额外+10行动点</option>
+                                </select>
+                            </td>
+                            <td>
+                                <canvas id="fatigueChart" class="barChart"></canvas>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>心理状态</td>
+                            <td>
+                                <button class="control-btn" onclick="decrementStatus('mental')">-</button>
+                                <button class="control-btn" onclick="incrementStatus('mental')">+</button>
+                            </td>
+                            <td>
+                                <input type="text" id="mental" class="value" value="0" oninput="updateStatus('mental', 0)">
+                            </td>
+                            <td>
+                                <select id="mental-select">
+                                    <option value="-10">痛苦,-10行动点</option>
+                                    <option value="-5">不稳定，-5行动点</option>
+                                    <option value="0">稳定，不增加行动点</option>
+                                    <option value="10">积极，额外+10行动点</option>
+                                    <option value="15">优秀，额外+15行动点</option>
+                                </select>
+                            </td>
+                            <td>
+                                <canvas id="mentalChart" class="barChart"></canvas>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button id="saveStatusBtn" onclick="saveStatus()" style="margin-top: 1rem;">保存</button>
+            </div>
         
-            <!-- 引入外部脚本 -->
-            <script src="script.js"></script>
-        </div>
-        <!-- ===================== 角色状态面板（示例） ===================== -->
-        <div class="panel status-panel">
-            <h2>状态</h2>
-            <table id="status-table" style="width: 100%; border-collapse: collapse;">
-                <tbody>
-                    <tr>
-                        <td>健康状态</td>
-                        <td>
-                            <button class="control-btn" onclick="decrementStatus('health')">-</button>
-                            <button class="control-btn" onclick="incrementStatus('health')">+</button>
-                        </td>
-                        <td>
-                            <input type="text" id="health" class="value" value="0" oninput="updateStatus('health', 0)">
-                        </td>
-                        <td>
-                            <select id="health-select">
-                                <option value="-10">非常差,-10行动点</option>
-                                <option value="-5">差，-5行动点</option>
-                                <option value="0">一般，不增加行动点</option>
-                                <option value="10">良好，额外+10行动点</option>
-                                <option value="20">非常好，额外+20行动点</option>
-                            </select>
-                        </td>
-                        <td>
-                            <canvas id="healthChart" class="barChart"></canvas>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>能量状态</td>
-                        <td>
-                            <button class="control-btn" onclick="decrementStatus('energy')">-</button>
-                            <button class="control-btn" onclick="incrementStatus('energy')">+</button>
-                        </td>
-                        <td>
-                            <input type="text" id="energy" class="value" value="0" oninput="updateStatus('energy', 0)">
-                        </td>
-                        <td>
-                            <select id="energy-select">
-                                <option value="-10">非常低,-10行动点</option>
-                                <option value="-5">低，-5行动点</option>
-                                <option value="0">中等，不增加行动点</option>
-                                <option value="10">高，额外+10行动点</option>
-                                <option value="15">非常高，额外+15行动点</option>
-                            </select>
-                        </td>
-                        <td>
-                            <canvas id="energyChart" class="barChart"></canvas>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>疲劳状态</td>
-                        <td>
-                            <button class="control-btn" onclick="decrementStatus('fatigue')">-</button>
-                            <button class="control-btn" onclick="incrementStatus('fatigue')">+</button>
-                        </td>
-                        <td>
-                            <input type="text" id="fatigue" class="value" value="0" oninput="updateStatus('fatigue', 0)">
-                        </td>
-                        <td>
-                            <select id="fatigue-select">
-                                <option value="-15">非常低,-15行动点</option>
-                                <option value="-10">低，-10行动点</option>
-                                <option value="0">中等，不增加行动点</option>
-                                <option value="5">高，额外+5行动点</option>
-                                <option value="10">非常高，额外+10行动点</option>
-                            </select>
-                        </td>
-                        <td>
-                            <canvas id="fatigueChart" class="barChart"></canvas>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>心理状态</td>
-                        <td>
-                            <button class="control-btn" onclick="decrementStatus('mental')">-</button>
-                            <button class="control-btn" onclick="incrementStatus('mental')">+</button>
-                        </td>
-                        <td>
-                            <input type="text" id="mental" class="value" value="0" oninput="updateStatus('mental', 0)">
-                        </td>
-                        <td>
-                            <select id="mental-select">
-                                <option value="-10">痛苦,-10行动点</option>
-                                <option value="-5">不稳定，-5行动点</option>
-                                <option value="0">稳定，不增加行动点</option>
-                                <option value="10">积极，额外+10行动点</option>
-                                <option value="15">优秀，额外+15行动点</option>
-                            </select>
-                        </td>
-                        <td>
-                            <canvas id="mentalChart" class="barChart"></canvas>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <button id="saveStatusBtn" onclick="saveStatus()" style="margin-top: 1rem;">
-                保存
-            </button>
-        </div>        
+            <!-- 右侧: 技能面板 -->
+            <div class="panel skills-panel" style="flex: 1;">
+                <h2>技能</h2>
+                <div id="loading-indicator" style="display: none;">加载中...</div>
+                <table id="skills-table" style="width: 100%; border-collapse: collapse;">
+                    <tbody>
+                        <!-- 页面加载后，脚本会动态填充技能数据 -->
+                    </tbody>
+                </table>
+                <button id="btnAddSkill" style="margin-top: 1rem;">添加技能</button>
+            </div>
+        </div>      
         <!-- ===================== 目标及任务面板 ===================== -->
         <div class="panel tasks-panel">
             <h2>任务</h2>

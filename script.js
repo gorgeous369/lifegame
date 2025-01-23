@@ -659,16 +659,15 @@ function fetchTasks() {
         const thead = document.createElement('thead');
         thead.innerHTML = `
             <tr>
-                <th style="border: 1px solid #ccc; padding: 10px;">任务名称</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">任务等级</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">行动点</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">属性</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">技能</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">奖励</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">开始时间</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">结束时间</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">状态</th>
-                <th style="border: 1px solid #ccc; padding: 10px;">操作</th>
+                <th>任务名称</th>
+                <th>任务等级</th>
+                <th>行动点</th>
+                <th>属性</th>
+                <th>技能</th>
+                <th>奖励</th>
+                <th>剩余时间</th>
+                <th>状态</th>
+                <th>操作</th>
             </tr>
         `;
         table.appendChild(thead);
@@ -676,18 +675,21 @@ function fetchTasks() {
         // 添加任务行
         const tbody = document.createElement('tbody');
         data.tasks.forEach(t => {
+            const remainingTime = calculateRemainingTime(t.endtime);
+            const attributesFormatted = formatJson(t.attribute);
+            const skillsFormatted = formatJson(t.skill);
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td style="border: 1px solid #ccc; padding: 10px;">${t.taskname}</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">${t.tasklevel}</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">${t.point}</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">${JSON.stringify(t.attribute)}</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">${JSON.stringify(t.skill)}</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">${t.bonus}</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">${t.starttime}</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">${t.endtime}</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">${t.status === 0 ? '未完成' : '已完成'}</td>
-                <td style="border: 1px solid #ccc; padding: 10px;">
+                <td>${t.taskname}</td>
+                <td>${t.tasklevel}</td>
+                <td>${t.point}</td>
+                <td>${attributesFormatted}</td>
+                <td>${skillsFormatted}</td>
+                <td>${t.bonus}</td>
+                <td>${remainingTime}</td>
+                <td>${t.status === 0 ? '未完成' : '已完成'}</td>
+                <td>
                     ${t.status === 0 ? `<button onclick='completeTask(${JSON.stringify(t)})' style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">完成</button>` : ''}
                     <button onclick="deleteTask(${t.taskid})" style="padding: 5px 10px; background-color: #e74c3c; color: white; border: none; border-radius: 5px;">删除</button>
                 </td>
@@ -703,6 +705,32 @@ function fetchTasks() {
         console.error('加载 tasks 出错：', error);
         alert('加载 tasks 出错：' + error.message);
     });
+}
+
+// 计算剩余时间
+function calculateRemainingTime(endtime) {
+    const now = new Date();
+    const endDate = new Date(endtime);
+
+    const diffInMs = endDate - now;
+    if (diffInMs <= 0) {
+        return '已超时';
+    }
+
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+    const diffInHours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+    return `${diffInDays}天${diffInHours}小时`;
+}
+
+// 格式化 JSON 数据为 "力量+1, 智力+2" 形式
+function formatJson(jsonData) {
+    if (!jsonData || typeof jsonData !== 'object') {
+        return '无';
+    }
+    return Object.entries(jsonData)
+        .map(([key, value]) => `${key}+${value}`)
+        .join('，');
 }
 
 /**
