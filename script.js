@@ -658,7 +658,7 @@ function fetchTasks() {
         const table = document.createElement('table');
         table.style.width = '100%';
         table.style.borderCollapse = 'collapse';
-
+        table.style.textAlign = 'left';
         // 添加标题行
         const thead = document.createElement('thead');
         thead.innerHTML = `
