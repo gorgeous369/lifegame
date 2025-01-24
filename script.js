@@ -277,6 +277,66 @@ function onAddSkillClicked() {
 }
 
 /** 向后端发送添加技能请求 */
+function addOrUpdateSkill(skillName, proficiency) {
+    // 先检查技能是否存在
+    fetch(`${SERVER_URL}/get_skill_by_user/${CURRENT_USERNAME}`, {
+        method: 'GET'
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`获取技能列表失败: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data.skill_list || !Array.isArray(data.skill_list)) {
+                throw new Error('后端返回格式不正确，缺少 skill_list');
+            }
+
+            const skill = data.skill_list.find(s => s.skillname === skillName);
+
+            if (skill) {
+                // 如果技能已存在，调用更新接口
+                updateSkill(skillName, proficiency);
+            } else {
+                // 如果技能不存在，调用添加接口
+                addSkill(skillName, proficiency);
+            }
+        })
+        .catch(error => {
+            console.error('检查技能时出错:', error);
+        });
+}
+
+function updateSkill(skillName, proficiency) {
+    const payload = {
+        username: CURRENT_USERNAME,
+        skillname: skillName,
+        proficiency: proficiency
+    };
+
+    fetch(`${SERVER_URL}/update_skill`, {
+        method: 'POST', // 假设是 POST 方法
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`更新技能失败: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('更新技能成功:', data);
+            // 更新成功后刷新技能列表
+            fetchSkills();
+        })
+        .catch(err => {
+            console.error('更新技能出错：', err);
+            alert('更新技能出错：' + err.message);
+        });
+}
+
 function addSkill(skillName, proficiency) {
     const payload = {
         username: CURRENT_USERNAME,
@@ -286,24 +346,24 @@ function addSkill(skillName, proficiency) {
 
     fetch(`${SERVER_URL}/add_skill`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`添加技能失败: ${response.status}`);
-        }
-        return response.json(); // 假设返回 { "status": "ok" } 之类
-    })
-    .then(data => {
-        console.log('添加技能成功:', data);
-        // 添加成功后重新拉取刷新页面
-        fetchSkills();
-    })
-    .catch(err => {
-        console.error('添加技能出错：', err);
-        alert('添加技能出错：' + err.message);
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`添加技能失败: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('添加技能成功:', data);
+            // 添加成功后重新拉取刷新页面
+            fetchSkills();
+        })
+        .catch(err => {
+            console.error('添加技能出错：', err);
+            alert('添加技能出错：' + err.message);
+        });
 }
 
 /**********************************************
@@ -387,7 +447,7 @@ function saveNewSkill(button) {
     const proficiency = parseInt(proficiencyInput.value, 10);
 
     // 调用添加接口
-    addSkillToServer(skillName, proficiency);
+    addSkill(skillName, proficiency);
 }
 
 /**********************************************
@@ -1149,7 +1209,9 @@ function completeTask(task) {
     });
 
     // 3. 更新奖励点数
-    incrementCurrentPoint(task.bonus);
+    if (task.bonus !== 0) {
+        incrementCurrentPoint(task.bonus);
+    }
 
     // 4. 更新行动点数
     updateActionPoint(-task.point);
@@ -1178,7 +1240,8 @@ function updateTaskStatus(taskId, status) {
 }
 
 function incrementCurrentPoint(value) {
-    // 获取当前积分
+    let newPoint;
+
     fetch(`${SERVER_URL}/get_user_point/${CURRENT_USERNAME}`, {
         method: 'GET'
     })
@@ -1189,8 +1252,9 @@ function incrementCurrentPoint(value) {
             return response.json();
         })
         .then(data => {
-            const currentPoint = data.currentpoint || 0;
-            const newPoint = currentPoint + value;
+            const currentPoint = Number(data.currentpoint) || 0; // 强制将 currentPoint 转换为数字
+            const incrementValue = Number(value); // 强制将 value 转换为数字
+            newPoint = currentPoint + incrementValue; // 执行数值加法
 
             // 调用更新积分接口
             return fetch(`${SERVER_URL}/update_user_point/${CURRENT_USERNAME}`, {
@@ -1205,12 +1269,12 @@ function incrementCurrentPoint(value) {
             }
             return response.json();
         })
-        .then(data => {
-            console.log('积分已更新:', data);
-            fetchCurrentPoint(); // 刷新当前积分显示
+        .then(() => {
+            console.log(`积分更新成功: 新积分=${newPoint}`);
+            return fetchCurrentPoint(); // 调用 fetchCurrentPoint 并返回其 Promise
         })
         .catch(error => {
-            console.error('积分更新出错:', error);
+            console.error(`积分更新失败 (增加值: ${value}):`, error);
         });
 }
 
@@ -1225,21 +1289,36 @@ function incrementAttribute(attribute, value) {
 }
 
 function incrementSkillValue(skillName, value) {
-    fetch(`${SERVER_URL}/get_skill_by_name/${CURRENT_USERNAME}/${skillName}`, {
+    fetch(`${SERVER_URL}/get_skill_by_user/${CURRENT_USERNAME}`, {
         method: 'GET'
     })
-        .then(response => response.json())
-        .then(skill => {
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`获取技能列表失败: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data.skill_list || !Array.isArray(data.skill_list)) {
+                throw new Error('后端返回格式不正确，缺少 skill_list');
+            }
+
+            const skill = data.skill_list.find(s => s.skillname === skillName);
+
             if (skill) {
-                const newProficiency = skill.proficiency + value;
-                // 更新技能熟练度到后端
-                addSkillToServer(skillName, newProficiency);
+                // 如果技能已存在，更新熟练度，确保熟练度不低于0
+                const newProficiency = Math.max(0, skill.proficiency + value);
+                addOrUpdateSkill(skillName, newProficiency);
+            } else if (value > 0) {
+                // 如果技能不存在且 value > 0，直接添加
+                addOrUpdateSkill(skillName, value);
             } else {
-                // 如果技能不存在，直接添加
-                addSkillToServer(skillName, value);
+                console.warn(`技能 ${skillName} 不存在，且传入值为 ${value}，未执行任何操作`);
             }
         })
-        .catch(error => console.error('技能更新出错:', error));
+        .catch(error => {
+            console.error('更新技能熟练度时出错:', error);
+        });
 }
 
 function updateActionPoint(delta) {
