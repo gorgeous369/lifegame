@@ -726,8 +726,8 @@ function fetchTasks() {
                 <th>任务名称</th>
                 <th>任务等级</th>
                 <th>行动点</th>
-                <th>属性</th>
-                <th>技能</th>
+                <th>属性提升</th>
+                <th>技能提升</th>
                 <th>奖励</th>
                 <th>剩余时间</th>
                 <th>状态</th>
