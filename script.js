@@ -1136,9 +1136,11 @@ function saveStatus() {
 function completeTask(task) {
     // 1. 更新属性点数
     const updatedAttributes = task.attribute;
-    Object.keys(updatedAttributes).forEach(attr => {
-        incrementAttribute(attr, updatedAttributes[attr]);
-    });
+    if (updatedAttributes) {
+        Object.keys(updatedAttributes).forEach(attr => {
+            incrementAttribute(attr, updatedAttributes[attr]);
+        });
+    }
 
     // 2. 更新技能熟练度
     const updatedSkills = task.skill;
@@ -1259,13 +1261,9 @@ function updateActionPoint(delta) {
                 body: JSON.stringify(updatedStatus)
             })
             .then(response => response.json())
-            .then(result => {
-                if (result.status === 200) {
-                    console.log(`行动点数更新成功: ${newActionPoint}`);
-                    fetchStatus(); // 刷新状态
-                } else {
-                    console.error('行动点数更新失败:', result.message || result.error);
-                }
+            .then(() => {
+                console.log(`行动点数更新成功: ${newActionPoint}`);
+                fetchStatus(); // 刷新状态
             })
             .catch(error => console.error('更新行动点数时出错:', error));
         } else {
