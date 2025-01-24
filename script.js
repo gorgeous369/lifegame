@@ -613,7 +613,7 @@ function fetchCurrentPoint() {
 
         // 更新页面上的积分显示
         const pointDisplay = document.getElementById('current-point');
-        pointDisplay.textContent = `当前积分: ${data.currentpoint}`;
+        pointDisplay.textContent = `剩余奖励点数: ${data.currentpoint}`;
     })
     .catch(error => {
         console.error('加载 currentpoint 出错：', error);
