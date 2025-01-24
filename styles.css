@@ -80,17 +80,6 @@ li {
     background-color: #74b9ff;
 }
 
-.add-skill-btn {
-    margin-top: 10px;
-    padding: 8px 15px;
-    background-color: white;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
 .radar-panel {
     margin-bottom: 20px;
     text-align: center;
@@ -101,27 +90,10 @@ li {
     margin: 0 auto;
 }
 
-input::-webkit-input-placeholder,
-textarea::-webkit-input-placeholder {
-    color: transparent;
-}
-input:-moz-placeholder,
-textarea:-moz-placeholder {
-    color: transparent;
-}
-input::-moz-placeholder,
-textarea::-moz-placeholder {
-    color: transparent;
-}
-input:-ms-input-placeholder,
-textarea:-ms-input-placeholder {
-    color: transparent;
-}
-
 .barChart {
     width: 100%;
     height: auto;
-    max-width: 400px;
+    max-width: 300px;
     max-height: 50px;
 }
 
@@ -138,7 +110,7 @@ button {
 
 /* 实现奖励按钮 */
 .button-green {
-    background-color: #4CAF50; /* 绿色 */
+    background-color: #28a745; /* 绿色 */
     color: white;
     margin-right: 10px;
     border: none;
@@ -155,7 +127,7 @@ button {
 
 /* 删除按钮 */
 .button-red {
-    background-color: #e74c3c; /* 红色 */
+    background-color: #dc3545; /* 红色 */
     color: white;
     border: none;
     border-radius: 5px;
@@ -183,4 +155,25 @@ button {
 .button-blue:hover {
     background-color: #0056b3;
     transform: scale(1.05);
+}
+
+.container {
+    background: linear-gradient(to bottom, #ffffff, #f4f4f4);
+    padding: 30px;
+    border: 2px solid #ddd;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* 增加阴影 */
+}
+
+.title {
+    font-size: 3em; /* 加大字体 */
+    font-weight: bold; /* 加粗字体 */
+    text-shadow: 2px 2px #aaa; /* 增加阴影 */
+}
+
+button {
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+button:hover {
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px); /* 按钮悬浮效果 */
 }
