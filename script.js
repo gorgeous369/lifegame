@@ -17,6 +17,8 @@ window.onload = function () {
     fetchTasks();
     fetchStatus(); 
     document.getElementById('btnAddSkill').addEventListener('click', onAddSkillClicked);
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
 };
 
 window.hasUnsavedChanges = false;
