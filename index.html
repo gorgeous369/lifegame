@@ -163,7 +163,8 @@
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <!-- 左侧: 状态面板 -->
             <div class="panel status-panel" style="flex: 2;">
-                <h2>状态</h2>
+                <h2>今日状态</h2>
+                <h2 id="action-point" style="font-weight: bold; margin: 5;">加载中...</h2>
                 <table id="status-table" style="width: 100%; border-collapse: collapse;">
                     <tbody>
                         <tr>
@@ -264,19 +265,15 @@
                         </tr>
                     </tbody>
                 </table>
-                <button id="saveStatusBtn" class="button-blue" onclick="saveStatus()" style="margin-top: 1rem;">保存</button>
+                <button id="saveStatusBtn" class="button-blue" onclick="saveStatus()" style="margin-top: 1rem;">设定体力（覆盖当前体力）</button>
             </div>
             <div  style="flex: 2;">
-                <!-- 右侧: 当前奖励点数 -->
-                <div class="panel bonus-panel" style="display: flex; align-items: center; gap: 1rem;">
-                    <!-- 显示剩余奖励点数 -->
-                    <p id="current-point" style="font-size: 1.2rem; font-weight: bold; margin: 0;">剩余奖励点数：加载中...</p>
-                    <!-- 刷新按钮 -->
-                    <button onclick="fetchCurrentPoint()" class="button-blue" style="padding: 0.5rem 1rem;">更新</button>
-                </div>
+
                 <!-- 右侧: 奖励列表 -->
                 <div class="panel bonus-panel">
                     <h2>奖励</h2>
+                    <!-- 显示剩余奖励点数 -->
+                    <p id="current-point" style="font-size: 1.2rem; font-weight: bold; margin: 0;">剩余奖励点数：加载中...</p>
                     <table id="bonus-table" style="width: 100%; border-collapse: collapse;">
                         <tbody>
                             <!-- JavaScript 动态填充 -->

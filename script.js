@@ -584,6 +584,7 @@ function claimBonus(bonusId, bonusPoint, bonusName, tr) {
             .then(() => {
                 // 删除奖励
                 deleteBonus(bonusId, tr);
+                fetchCurrentPoint();
             })
             .catch(error => {
                 console.error('实现奖励出错：', error);
@@ -1049,21 +1050,23 @@ function fetchStatus() {
     .then(data => {
         if (data.status) {
             const status = data.status;
+
+            // 更新页面状态输入框
             Object.keys(status).forEach(key => {
                 const input = document.getElementById(key);
                 if (input) {
                     input.value = status[key];
                 }
-                const select = document.getElementById(`${key}-select`);
-                if (select) {
-                    for (const option of select.options) {
-                        if (parseInt(option.value, 10) === status[key]) {
-                            option.selected = true;
-                            break;
-                        }
-                    }
-                }
             });
+
+            // 更新行动点数显示
+            if (status.actionpoint !== undefined && status.actionpoint !== null) {
+                const actionPointDisplay = document.getElementById('action-point');
+                if (actionPointDisplay) {
+                    actionPointDisplay.textContent = `剩余体力：${status.actionpoint}`;
+                }
+            }
+
             // 更新条形图数据
             updateStatusCharts();
         } else {
@@ -1096,6 +1099,11 @@ function saveStatus() {
         }
     });
 
+    // 计算 actionpoint (状态值乘以 10 后求和)
+    status.actionpoint = ALLOWED_KEYS.reduce((sum, key) => {
+        return sum + (status[key] || 0) * 10;
+    }, 0);
+
     // 发送给后端
     fetch(`${SERVER_URL}/update_user_status/${CURRENT_USERNAME}`, {
         method: 'POST',
@@ -1110,6 +1118,7 @@ function saveStatus() {
         if (status === 200) {
             alert(body.message || '状态已成功保存！');
             console.log('状态已成功保存！');
+            fetchStatus();
             window.hasUnsavedChanges = false;
         } else {
             alert(body.error || body.message || '保存失败！');
@@ -1138,7 +1147,10 @@ function completeTask(task) {
     // 3. 更新奖励点数
     incrementCurrentPoint(task.bonus);
 
-    // 4. 修改任务状态为 1（完成）
+    // 4. 更新行动点数
+    updateActionPoint(-task.point);
+
+    // 5. 修改任务状态为 1（完成）
     updateTaskStatus(task.taskid, 1);
 }
 
@@ -1226,3 +1238,37 @@ function incrementSkillValue(skillName, value) {
         .catch(error => console.error('技能更新出错:', error));
 }
 
+function updateActionPoint(delta) {
+    // 获取当前状态并更新行动点数
+    fetch(`${SERVER_URL}/get_user_status/${CURRENT_USERNAME}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status && data.status.actionpoint !== undefined) {
+            const newActionPoint = (data.status.actionpoint || 0) + delta;
+
+            // 更新状态中的行动点数
+            const updatedStatus = { actionpoint: newActionPoint };
+            fetch(`${SERVER_URL}/update_user_status/${CURRENT_USERNAME}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedStatus)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 200) {
+                    console.log(`行动点数更新成功: ${newActionPoint}`);
+                    fetchStatus(); // 刷新状态
+                } else {
+                    console.error('行动点数更新失败:', result.message || result.error);
+                }
+            })
+            .catch(error => console.error('更新行动点数时出错:', error));
+        } else {
+            console.warn('未找到当前行动点数，无法更新');
+        }
+    })
+    .catch(error => console.error('获取当前状态时出错:', error));
+}
