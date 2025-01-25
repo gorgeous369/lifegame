@@ -427,8 +427,8 @@ function addSkillRow() {
         <button class="control-btn" onclick="decrementSkill(this)">-</button>
         <input type="text" value="0" class="value" readonly>
         <button class="control-btn" onclick="incrementSkill(this)">+</button>
-        <button class="delete-btn" onclick="this.parentElement.remove()">删除(仅前端)</button>
-        <button class="delete-btn" onclick="saveNewSkill(this)">保存到服务器</button>
+        <button class="button-red" onclick="this.parentElement.remove()">删除(仅前端)</button>
+        <button class="button-red" onclick="saveNewSkill(this)">保存到服务器</button>
     `;
     skillsList.appendChild(newSkill);
 }
@@ -868,7 +868,7 @@ function addAttributeRow() {
             </select>
         </td>
         <td><input type="number" class="attribute-value" value="0" /></td>
-        <td><button type="button" onclick="deleteRow(this)">删除</button></td>
+        <td><button type="button" class="button-red" onclick="deleteRow(this)">删除</button></td>
     `;
 
     table.appendChild(row);
@@ -933,6 +933,7 @@ function clearTaskModalInputs() {
 /** 向后端发送添加 task 请求 */
 function addTask(taskName, taskLevel, taskPoint, attribute, skill, bonus, startTime, endTime, status) {
     const payload = {
+        userid: CURRENT_USERNAME,
         username: CURRENT_USERNAME,
         taskname: taskName,
         tasklevel: taskLevel,
@@ -948,7 +949,7 @@ function addTask(taskName, taskLevel, taskPoint, attribute, skill, bonus, startT
     // 假设后端接口是 /add_task
     fetch(`${SERVER_URL}/add_task`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     })
     .then(response => {
@@ -972,30 +973,36 @@ function addTask(taskName, taskLevel, taskPoint, attribute, skill, bonus, startT
  * 删除一条 task
  */
 function deleteTask(taskId) {
-    // 调用后端的删除接口
+    const payload = {
+        username: CURRENT_USERNAME, // 当前用户名
+        taskid: taskId // 要删除的任务 ID
+    };
+
+    // 调用后端删除接口
     fetch(`${SERVER_URL}/delete_task`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: CURRENT_USERNAME, taskid: taskId }) // 包含 username 和 taskid
+        body: JSON.stringify(payload)
     })
     .then(response => {
         if (!response.ok) {
             if (response.status === 404) {
-                throw new Error('未找到要删除的 Task。');
+                throw new Error('未找到要删除的任务。');
             } else {
-                throw new Error(`删除 task 失败: ${response.status}`);
+                throw new Error(`删除任务失败: ${response.status}`);
             }
         }
         return response.json();
     })
     .then(data => {
-        console.log('删除 task 成功:', data);
-        // 成功后重新加载列表
+        console.log('删除任务成功:', data);
+        alert(data.message || '任务已成功删除');
+        // 成功后重新加载任务列表
         fetchTasks();
     })
     .catch(err => {
-        console.error('删除 task 出错：', err.message);
-        alert('删除 task 出错：' + err.message);
+        console.error('删除任务出错：', err.message);
+        alert(`删除任务出错：${err.message}`);
     });
 }
 
