@@ -692,6 +692,16 @@ function fetchCurrentPoint() {
  * 查询并加载当前用户的所有 tasks
  */
 function fetchTasks() {
+    const attributeMap = {
+        strength: "体力",
+        agility: "敏捷",
+        endurance: "体质",
+        intelligence: "智力",
+        wisdom: "精神",
+        charisma: "魅力",
+        luck: "幸运",
+        creativity: "创造力"
+    };
     // 假设后端接口是 /get_tasks
     fetch(`${SERVER_URL}/get_tasks`, {
         method: 'GET'
@@ -735,13 +745,14 @@ function fetchTasks() {
             </tr>
         `;
         table.appendChild(thead);
-
         // 添加任务行
         const tbody = document.createElement('tbody');
         data.tasks.forEach(t => {
+            const attributes = t.attribute || {};
+            const skills = t.skill || {};
             const remainingTime = calculateRemainingTime(t.endtime);
-            const attributesFormatted = formatJson(t.attribute);
-            const skillsFormatted = formatJson(t.skill);
+            const attributesFormatted = Object.entries(attributes).map(([key, value]) => `${attributeMap[key] || key}+${value}`).join("，");
+            const skillsFormatted = formatJson(skills);
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
