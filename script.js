@@ -878,7 +878,7 @@ function addAttributeRow() {
                 ${selectOptions}
             </select>
         </td>
-        <td><input type="number" class="attribute-value" value="0" /></td>
+        <td><input type="number" class="attribute-value" value="0"  style="width: 50px;"/></td>
         <td><button type="button" class="button-red" onclick="deleteRow(this)">删除</button></td>
     `;
 
@@ -890,9 +890,9 @@ function addSkillRow() {
     const row = document.createElement("tr");
 
     row.innerHTML = `
-        <td><input type="text" class="skill-name" placeholder="技能名称" /></td>
-        <td><input type="number" class="skill-value" value="0" /></td>
-        <td><button type="button" onclick="deleteRow(this)">删除</button></td>
+        <td><input type="text" class="skill-name" placeholder="技能名称"  style="width: 70px;"/></td>
+        <td><input type="number" class="skill-value" value="0"  style="width: 50px;"/></td>
+        <td><button class="button-red" type="button" onclick="deleteRow(this)">删除</button></td>
     `;
 
     table.appendChild(row);
