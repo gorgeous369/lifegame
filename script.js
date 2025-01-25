@@ -212,18 +212,18 @@ function fetchSkills() {
     })
     .then(data => {
         console.log('后端返回:', data);
-    
-        // 验证 skill_list 是否存在且是数组
-        if (!data.skill_list || !Array.isArray(data.skill_list)) {
-            throw new Error('后端返回格式不符合预期，skill_list 不存在或不是数组');
-        }
-        
-        // 这里才可安全调用 forEach
-        const skillArr = data.skill_list;
+
+        // 验证 skill_list 是否存在，如果不存在默认为空数组
+        const skillArr = data.skill_list || [];
     
         const tableBody = document.querySelector('#skills-table tbody'); // 选择 tbody
         tableBody.innerHTML = '';
-    
+
+        if (skillArr.length === 0) {
+            console.log('没有任何技能数据。');
+        }
+
+        // 遍历技能数组并填充表格
         skillArr.forEach(skill => {
             // 创建 <tr>
             const tr = document.createElement('tr');
@@ -253,8 +253,7 @@ function fetchSkills() {
         
             // 将行添加到表格
             tableBody.appendChild(tr);
-        }
-        );
+        });
     })
     .catch(error => {
         console.error('加载技能出错：', error);
