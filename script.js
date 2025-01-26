@@ -1129,6 +1129,24 @@ function fetchStatus() {
     .then(data => {
         if (data.status) {
             const status = data.status;
+            const updatetimeUTC = new Date(status.updatetime); // 获取服务器返回的 UTC 时间
+            const updatetimeLocal = new Date(updatetimeUTC.toLocaleString()); // 转换为本地时间
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // 只比较日期部分
+
+            let isReset = false; // 标记是否重置状态
+
+            // 如果状态更新日期不是今天，重置状态为 0
+            if (updatetimeLocal < today) {
+                Object.keys(status).forEach(key => {
+                    if (key !== 'updatetime' && key !== 'actionpoint') {
+                        status[key] = 0;
+                    }
+                });
+                status.actionpoint = 0; // 剩余体力也设置为 0
+                isReset = true;
+            }
 
             // 更新页面状态输入框
             Object.keys(status).forEach(key => {
@@ -1139,9 +1157,11 @@ function fetchStatus() {
             });
 
             // 更新行动点数显示
-            if (status.actionpoint !== undefined && status.actionpoint !== null) {
-                const actionPointDisplay = document.getElementById('action-point');
-                if (actionPointDisplay) {
+            const actionPointDisplay = document.getElementById('action-point');
+            if (actionPointDisplay) {
+                if (isReset) {
+                    actionPointDisplay.textContent = `剩余体力：${status.actionpoint}（今日未设置状态及体力）`;
+                } else {
                     actionPointDisplay.textContent = `剩余体力：${status.actionpoint}`;
                 }
             }
@@ -1149,7 +1169,7 @@ function fetchStatus() {
             // 更新条形图数据
             updateStatusCharts();
         } else {
-            console.warn('未找到状态'); // 用控制台日志提示开发者
+            console.warn('未找到状态');
         }
     })
     .catch(error => console.error('Error:', error));
@@ -1164,13 +1184,11 @@ function saveStatus() {
         'mental'
     ];
 
-    // 收集所有输入框
     const rawStatus = {};
     document.querySelectorAll('#status-table input').forEach(input => {
         rawStatus[input.id] = parseInt(input.value) || 0;
     });
 
-    // 过滤只保留我们关心的 4 个状态
     const status = {};
     ALLOWED_KEYS.forEach(key => {
         if (key in rawStatus) {
@@ -1183,7 +1201,9 @@ function saveStatus() {
         return sum + (status[key] || 0) * 10;
     }, 0);
 
-    // 发送给后端
+    // 添加 updatetime，使用本地时间的 ISO 格式
+    status.updatetime = new Date().toISOString();
+
     fetch(`${SERVER_URL}/update_user_status/${CURRENT_USERNAME}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
